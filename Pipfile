@@ -1,0 +1,23 @@
+[[source]]
+name = "pypi"
+url = "https://pypi.org/simple"
+verify_ssl = true
+
+[dev-packages]
+
+[packages]
+fire = "*"
+termcolor = "*"
+pyyaml = "*"
+pytest = "*"
+gitpython = "*"
+inquirer = "*"
+emoji = "*"
+pylint = "*"
+pyinquirer = "*"
+gitignore-parser = "*"
+psutil = "*"
+python-dotenv = "*"
+
+[requires]
+python_version = "3.7"

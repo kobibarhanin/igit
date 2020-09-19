@@ -1,0 +1,16 @@
+/.idea/
+__pycache__/
+*.py[cod]
+*.DS_Store
+
+dist/
+gitsy.egg-info/
+
+TODO
+.archive/
+.vscode/
+.gitsy/
+
+/core/dev/
+
+.env
