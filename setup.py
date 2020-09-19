@@ -11,18 +11,18 @@ with open(os.path.join(here, "cli", "version.py")) as f:
     exec(f.read(), package_conf)
 
 setuptools.setup(
-    name="gitsy",
+    name="igit",
     version=package_conf['__version__'],
     author="kobibarhanin",
     author_email="",
-    description="Git made easy",
+    description="Interactive git and more",
     long_description=long_description,
     long_description_content_type="text/markdown",
-    url="https://github.com/kobibarhanin/gitsy",
+    url="https://github.com/kobibarhanin/igit",
     packages=setuptools.find_packages(),
     entry_points={
         "console_scripts": [
-            "gitsy=entrypoint.entrypoint:main",
+            "igit=entrypoint.igit:main",
         ]
     },
     classifiers=[

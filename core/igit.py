@@ -10,12 +10,11 @@ from cli.display import *
 from cli.interactive import *
 from cli.config import *
 
-from core.context import Context
 from core.config import DIFF_MAP
 from core.gitcmd import in_gitignore, add_gitignore
 
 
-class Gitsy:
+class Igit:
 
     def __init__(self, repo_path=os.getcwd()):
         try:
@@ -27,15 +26,11 @@ class Gitsy:
             self._cwd = os.getcwd()
             self._branch = self.repo.active_branch.name
 
-            self.context = Context.from_gitsy(self.repo)
-
         except InvalidGitRepositoryError:
             raise Exception('Not a git repo, I have no power here...')
 
     def get_branch(self):
         return self._branch
-
-    # ====================== NON CONTEXTUAL METHODS =====================
 
     def branch(self, target_branch):
         """
@@ -64,8 +59,7 @@ class Gitsy:
                 display_message('Staging untracked files', 'yellow', 'floppy_disk')
                 self.repo.git.add(untracked)
 
-        change_list = self._calculate_change_list(GLOBAL_CONTEXT,
-                                                  diff_types=['unstaged', 'staged'])
+        change_list = self._calculate_change_list(diff_types=['unstaged', 'staged'])
 
         if len(change_list) > 0:
             self.repo.git.stash(f'save', f'{GLOBAL_STASH_PREFIX}_{self.get_branch()}')
@@ -88,23 +82,18 @@ class Gitsy:
     def rename(self, name):
         try:
             self.repo.active_branch.rename(name)
-            context = self.context.get_context(ignore_disabled=True)
-            if context['type'] == 'branch':
-                os.rename(self.context.context_file,
-                          os.path.join(self.context.gitsy_path, f'context_{name}.yaml'))
         except Exception as e:
             print(e)
 
     # TODO - sub cmds: add, remove, list, reset
     def ignore(self, opt):
         if opt is None:
-            # TODO - code duplication for add to context
             from pathlib import Path
             path = Path(self.repo_path)
             # collect all files in repo
             opt_files = [str(file.relative_to(self.repo_path))
                          for file in list(path.rglob('*'))
-                         if self.context._file_dir_conditions(self.repo_path, file)]
+                         if self._file_dir_conditions(self.repo_path, file)]
             # subtract files that are already added
             if not opt_files:
                 return 'No files found to add.'
@@ -127,37 +116,25 @@ class Gitsy:
             run_cmd('git add .')
             run_cmd('git commit -m ".gitignore fixed"')
 
-    # ====================== OPTIONALLY CONTEXTUAL METHODS =====================
-
     def up(self, message):
-        context = self.context.get_context()
-        change_list = self._calculate_change_list(context,
-                                                  diff_types=['unstaged', 'staged'])
+        change_list = self._calculate_change_list(diff_types=['unstaged', 'staged'])
         if change_list:
             self._up(change_list, message)
         else:
-            ctx = 'global' if context['type'] == 'global' else self.get_branch()
-            msg = f'Nothing to send up within context: {ctx}'
-            display_message(msg, 'yellow', 'speak_no_evil')
+            display_message('Nothing to send up', 'yellow', 'speak_no_evil')
 
     def save(self, message):
-        context = self.context.get_context()
-        change_list = self._calculate_change_list(context,
-                                                  diff_types=['unstaged'])
+        change_list = self._calculate_change_list(diff_types=['unstaged'])
+
         if change_list:
             self._save(change_list, message)
         else:
-            return f'No changes to save within context: {self._branch}'
+            display_message('No changes to save', 'yellow', 'speak_no_evil')
 
     def diff(self):
-        context = self.context.get_context()
-        change_list = self._calculate_change_list(context,
-                                                  diff_types=['unstaged'])
+        change_list = self._calculate_change_list(diff_types=['unstaged'])
         if not change_list:
-            ctx = 'global' if context['type'] == 'global' else self.get_branch()
-            msg = f'No diff found within context: {ctx}'
-            display_message(msg, 'yellow', 'speak_no_evil')
-            return
+            display_message('No diff found', 'yellow', 'speak_no_evil')
 
         file = file_selector(change_list)
         if not file:
@@ -167,9 +144,8 @@ class Gitsy:
             display_diff(diff)
 
     def undo(self, scope):
-        context = self.context.get_context()
         try:
-            scope = self._get_scope(context, scope, 'undo', diff_types=['unstaged'])
+            scope = self._get_scope(scope, 'undo', diff_types=['unstaged'])
         except Exception as e:
             return e
         if scope:
@@ -177,9 +153,8 @@ class Gitsy:
             display_list('undo', scope)
 
     def regret(self, scope):
-        context = self.context.get_context()
         try:
-            scope = self._get_scope(context, scope, 'regret', diff_types=['staged'])
+            scope = self._get_scope(scope, 'regret', diff_types=['staged'])
         except Exception as e:
             return e
         self.repo.git.reset('--', scope)
@@ -191,7 +166,8 @@ class Gitsy:
         try:
             self._save(files, message)
             display_list('up', files)
-        except GitCommandError:
+        except GitCommandError as e:
+            print(e)
             print(colored(f'pushing without changes', 'cyan'))
         self.repo.git.push('origin', self._branch)
         display_message('pushed', 'green', 'thumbsup')
@@ -208,14 +184,13 @@ class Gitsy:
         self._branch = self.repo.active_branch.name
         display_message(f'Switched to branch: {self._branch}', 'yellow', 'checkered_flag')
 
-    def _get_scope(self, context, scope, method, diff_types):
-        change_list = self._calculate_change_list(context, diff_types)
+    def _get_scope(self, scope, method, diff_types):
+        change_list = self._calculate_change_list(diff_types)
         if len(scope) == 0:
             if len(change_list) > 0:
                 scope = files_checkboxes(change_list, method)
             else:
-                # TODO - ugly code, this issue was seen in other places, need to generalize actions within context type (branch / global)
-                raise Exception(f'No actionable items found in {context["type"]} context{"." if context["type"] == "global" else ": " + self._branch}')
+                raise Exception(f'No actionable items found')
         elif scope[0] == 'all':
             if len(scope) < 2 or not scope[1] == 'allow':
                 if not verify_prompt(f'This will {method} all staged changes'):
@@ -226,19 +201,27 @@ class Gitsy:
                      if value in change_list]
         return scope
 
-    def _calculate_change_list(self, context, diff_types=None):
+    def _calculate_change_list(self, diff_types=None):
         change_list = []
         for diff_type in diff_types:
+
+            from_diff_type = [item.a_path for item
+                              in self.repo.index.diff(DIFF_MAP[diff_type])]
+            print(f'in diff type {diff_type} = {from_diff_type}')
+
             change_list += [item.a_path for item
                             in self.repo.index.diff(DIFF_MAP[diff_type])]
         change_list += self.repo.untracked_files
-
-        context_list = context['working-on'] if context['type'] == 'branch' else change_list
-        return self._intersection(change_list, context_list)
+        return change_list
 
     @staticmethod
     def _intersection(iterable1, iterable2):
         return list(set(iterable1).intersection(iterable2))
+
+    @staticmethod
+    def _file_dir_conditions(root, file):
+        file_parents = [p.name for p in list(file.relative_to(root).parents)]
+        return '.git' not in file_parents
 
     # ==================== TEST METHODS ====================
 
