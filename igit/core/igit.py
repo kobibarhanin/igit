@@ -5,13 +5,13 @@ from git import InvalidGitRepositoryError
 from git import GitCommandError
 from termcolor import colored
 
-from cli.shell import run_cmd
-from cli.display import *
-from cli.interactive import *
-from cli.config import *
+from igit.cli.shell import run_cmd
+from igit.cli.display import *
+from igit.cli.interactive import *
+from igit.cli.config import *
 
-from core.config import DIFF_MAP
-from core.gitcmd import in_gitignore, add_gitignore
+from igit.core.config import DIFF_MAP
+from igit.core.gitcmd import in_gitignore, add_gitignore
 
 
 class Igit:
@@ -32,7 +32,7 @@ class Igit:
     def get_branch(self):
         return self._branch
 
-    def branch(self, target_branch):
+    def branch(self, target_branch, hopping_mode):
         """
         Swith to target_branch if specified, else prompt branch menu.
         Implements auto-stashing to allow flex branch hopping.
@@ -47,37 +47,39 @@ class Igit:
                 target_branch = branch_selector(branches)
                 if not target_branch:
                     return
+        if hopping_mode:
+            # handle branch hopping in case of untracked files
+            untracked = self.repo.untracked_files
+            if untracked:
+                display_list_no_icon('Untracked files found', 'white', untracked)
+                if not verify_prompt(f'Stage them to continue?'):
+                    display_message('Stage files to branch with gitsy', 'yellow', 'sweat_smile')
+                    return
+                else:
+                    display_message('Staging untracked files', 'yellow', 'floppy_disk')
+                    self.repo.git.add(untracked)
 
-        # handle branch hopping in case of untracked files
-        untracked = self.repo.untracked_files
-        if untracked:
-            display_list_no_icon('Untracked files found', 'white', untracked)
-            if not verify_prompt(f'Stage them to continue?'):
-                display_message('Stage files to branch with gitsy', 'yellow', 'sweat_smile')
-                return
-            else:
-                display_message('Staging untracked files', 'yellow', 'floppy_disk')
-                self.repo.git.add(untracked)
+            change_list = self._calculate_change_list(diff_types=['unstaged', 'staged'])
 
-        change_list = self._calculate_change_list(diff_types=['unstaged', 'staged'])
+            if len(change_list) > 0:
+                self.repo.git.stash(f'save', f'{GLOBAL_STASH_PREFIX}_{self.get_branch()}')
+                display_message(f'Saving diff (stash): {GLOBAL_STASH_PREFIX}_{self.get_branch()}', 'green', 'thumbsup')
 
-        if len(change_list) > 0:
-            self.repo.git.stash(f'save', f'{GLOBAL_STASH_PREFIX}_{self.get_branch()}')
-            display_message(f'Saving diff (stash): {GLOBAL_STASH_PREFIX}_{self.get_branch()}', 'green', 'thumbsup')
         self._switch_branch(target_branch)
 
-        stash_list = self.repo.git.stash('list')
-        stash_stub = f'{GLOBAL_STASH_PREFIX}_{self.get_branch()}'
-        if stash_list:
-            stash_list = stash_list.split("\n")
+        if hopping_mode:
+            stash_list = self.repo.git.stash('list')
+            stash_stub = f'{GLOBAL_STASH_PREFIX}_{self.get_branch()}'
+            if stash_list:
+                stash_list = stash_list.split("\n")
 
-        for stash in stash_list:
-            stash_name = stash.split(' ')[-1]
-            if stash_stub == stash_name:
-                stash_index = stash.split(' ')[0].replace(':', '')
-                self.repo.git.stash(f'pop', stash_index)
-                display_message(f'Loading diff (stash): {stash_name}', 'green', 'thumbsup')
-                break
+            for stash in stash_list:
+                stash_name = stash.split(' ')[-1]
+                if stash_stub == stash_name:
+                    stash_index = stash.split(' ')[0].replace(':', '')
+                    self.repo.git.stash(f'pop', stash_index)
+                    display_message(f'Loading diff (stash): {stash_name}', 'green', 'thumbsup')
+                    break
 
     def rename(self, name):
         try:

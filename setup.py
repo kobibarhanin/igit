@@ -22,7 +22,8 @@ setuptools.setup(
     packages=setuptools.find_packages(),
     entry_points={
         "console_scripts": [
-            "igit=entrypoint.igit:main",
+            # "igit=entrypoint.igit:main",
+            "igit=igit:main",
         ]
     },
     classifiers=[
