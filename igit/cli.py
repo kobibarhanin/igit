@@ -1,7 +1,7 @@
 import os
 from pathlib import Path
-from igit.cli.config import DEFAULT_COMMIT
-from igit.core.igit import Igit
+from igit.core.config import DEFAULT_COMMIT
+from igit.core.commands import Igit
 import click
 
 
@@ -22,8 +22,7 @@ def branch(name, hopping_on):
 
 @cli.command()
 def add():
-    # TODO - implement
-    return 'NOT IMPLEMENTED'
+    Igit().add()
 
 
 @cli.command()
@@ -126,10 +125,13 @@ def test():
 def version():
     here = Path(__file__).parent.absolute()
     package_conf = {}
-    with open(os.path.join(here, "version.py")) as f:
+    with open(os.path.join(here, "__version__.py")) as f:
         exec(f.read(), package_conf)
     print(package_conf['__version__'])
 
 
 if __name__ == "__main__":
-    cli()
+    try:
+        cli()
+    except Exception as e:
+        print(e)
