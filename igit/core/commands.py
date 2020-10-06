@@ -21,21 +21,38 @@ class Igit:
         except InvalidGitRepositoryError:
             raise
 
-    def add(self):
-        unstaged = self.gitops.get_changed_files('unstaged')
-        if unstaged:
-            selected = self.interact.choose('choose files to add', unstaged)
-            if selected:
-                self.gitops.repo.git.add(selected)
-                self.display.list('added', unstaged, 'green', 'thumbsup')
-        else:
-            self.display.message('nothing to add', 'yellow', 'speak_no_evil')
+    def add(self, _files, _all):
+        try:
+            unstaged = self.gitops.get_changed_files('unstaged') + \
+                       self.gitops.get_untracked_files()
+            if unstaged:
+                if _all:
+                    selected = unstaged
+                elif _files:
+                    selected = self._intersection(_files, unstaged)
+                else:
+                    selected = self.interact.choose('choose files to add', unstaged)
+                if selected:
+                    self.gitops.repo.git.add(selected)
+                    self.display.list('added', selected, 'green', 'thumbsup')
+                else:
+                    self.display.message('command had no effect', 'yellow', 'speak_no_evil')
+            else:
+                self.display.message('nothing to add', 'yellow', 'speak_no_evil')
+        except GitCommandError as e:
+            self.display.message(f'unable to add\n{e}', 'red', 'x')
 
-    def commit(self):
-        pass
-        # TODO - implement
-        # prompts for commit message input (enables default commit message)
-        # in case of --add / -a flag: runs add logic first
+    def commit(self, _message, _add):
+        if not _message:
+            prompt = self.interact.text(f'commit message [{DEFAULT_COMMIT}]')
+            _message = prompt if prompt else DEFAULT_COMMIT
+        if _add:
+            self.add(_files=None, _all=True)
+        try:
+            self.gitops.repo.git.commit('-m', _message)
+            self.display.message('commited', 'green', 'thumbsup')
+        except GitCommandError as e:
+            self.display.message(f'unable to commit\n{e}', 'red', 'x')
 
     def push(self):
         pass
@@ -240,9 +257,9 @@ class Igit:
     #     change_list += self.repo.untracked_files
     #     return change_list
     #
-    # @staticmethod
-    # def _intersection(iterable1, iterable2):
-    #     return list(set(iterable1).intersection(iterable2))
+    @staticmethod
+    def _intersection(iterable1, iterable2):
+        return list(set(iterable1).intersection(iterable2))
     #
     # @staticmethod
     # def _file_dir_conditions(root, file):

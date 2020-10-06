@@ -5,7 +5,7 @@ os_type = os.name
 if os_type == 'nt':
     from PyInquirer import prompt
 else:
-    from inquirer import prompt, List, Checkbox, Confirm
+    from inquirer import prompt, List, Checkbox, Confirm, Text
 
 
 class Interact:
@@ -13,9 +13,13 @@ class Interact:
     def __init__(self, os_name=os.name) -> None:
         self.os_type = os_name
 
-    def prompt(self, message):
-        inquiry = Inquiry('prompt', message, 'confirm', os_name=os_type).inquiry
-        return self.response(prompt(inquiry), 'prompt')
+    def confirm(self, message):
+        inquiry = Inquiry('confirm', message, 'confirm', os_name=os_type).inquiry
+        return self.response(prompt(inquiry), 'confirm')
+
+    def text(self, message):
+        inquiry = Inquiry('text', message, 'text', os_name=os_type).inquiry
+        return self.response(prompt(inquiry), 'text')
 
     def select(self, message, choices):
         inquiry = Inquiry('select', message, 'list', choices=choices, os_name=os_type).inquiry
@@ -51,12 +55,14 @@ class Inquiry:
             inquiry_types = {
                 'list': List,
                 'checkbox': Checkbox,
-                'confirm': Confirm
+                'confirm': Confirm,
+                'text': Text
             }
             self.inquiry = [inquiry_types[inq_type](**inquiry)]
 
 
 if __name__ == '__main__':
-    print(Interact('nt').prompt('yes or no'))
+    print(Interact('nt').confirm('yes or no'))
+    print(Interact().text('enter some input'))
     print(Interact('nt').select('please choose', ['option 1', 'option 2']))
     print(Interact('nt').choose('please choose', ['option 1', 'option 2']))

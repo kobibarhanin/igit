@@ -11,8 +11,22 @@ def cli():
 
 
 @cli.command()
-@click.option('--name', default=None, help='target branch to switch to')
-@click.option('--hopping_on', is_flag=True, default=False, help='activate branch hopping')
+@click.option('--file', default=[], help='file to add', multiple=True)
+@click.option('--all', is_flag=True, default=False, help='add all unstaged changes')
+def add(file, all):
+    Igit().add(file, all)
+
+
+@cli.command()
+@click.option('--message', '-m', default=None, help='commit message')
+@click.option('--add', '-a', is_flag=True, default=False, help='add all unstaged changes')
+def commit(message, add):
+    Igit().commit(message, add)
+
+
+@cli.command()
+@click.option('--name', '-n', default=None, help='target branch to switch to')
+@click.option('--hopping_on', '-h', is_flag=True, default=False, help='activate branch hopping')
 def branch(name, hopping_on):
     """
     Switch to another branch.
@@ -20,15 +34,9 @@ def branch(name, hopping_on):
     return Igit().branch(name, hopping_on)
 
 
-@cli.command()
-def add():
-    Igit().add()
 
 
-@cli.command()
-def commit():
-    # TODO - implement
-    return 'NOT IMPLEMENTED'
+
 
 
 @cli.command()
