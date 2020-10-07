@@ -3,6 +3,7 @@ import os
 from git import Repo
 from git import InvalidGitRepositoryError
 from git import GitCommandError
+from igit.interactive.display import Display
 
 
 class GitOps:
@@ -16,6 +17,9 @@ class GitOps:
         try:
             self.repo = Repo(path, search_parent_directories=True)
             self.repo_path = os.path.dirname(self.repo.git_dir)
+            self.branch = self.repo.active_branch
+            self.display = Display()
+
         except InvalidGitRepositoryError:
             raise InvalidGitRepositoryError('Not a git repo, I have no power here...')
 
@@ -37,6 +41,11 @@ class GitOps:
                             in self.repo.index.diff(self.change_types[diff_type])]
         change_list += self.repo.untracked_files
         return change_list
+
+    def switch_branch(self, branch_name):
+        self.repo.git.checkout(branch_name)
+        self.branch = self.repo.active_branch.name
+        self.display.message(f'Switched to branch: {self.branch}', 'yellow', 'checkered_flag')
 
 
 def in_gitignore(gitignore_path, item):

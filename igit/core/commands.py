@@ -54,73 +54,94 @@ class Igit:
         except GitCommandError as e:
             self.display.message(f'unable to commit\n{e}', 'red', 'x')
 
-    def push(self):
-        pass
-        # TODO - implement
-        # pushes to remote
-        # in case of --add / -a flag: runs add + commit logic first
-        # in case of --commit / -c flag: runs commit logic first
+    def push(self, _add, _commit):
+        if _add:
+            self.add(_files=None, _all=False)
+            self.commit(_message=None, _add=False)
+        elif _commit:
+            self.commit(_message=None, _add=False)
+        try:
+            self.gitops.repo.git.push('origin', self.gitops.branch)
+            self.display.message('pushed', 'green', 'thumbsup')
+        except GitCommandError as e:
+            self.display.message(f'unable to push\n{e}', 'red', 'x')
 
-    # igit save -> adds and commits (default) all changes
-    # igit up -> adds, commits (default) and pushes all changes
+    def save(self, message):
+        self.add(_files=None, _all=True)
+        message = message if message else DEFAULT_COMMIT
+        self.commit(_message=message, _add=False)
 
-    # ===============================================================================
+    def up(self, message):
+        self.add(_files=None, _all=True)
+        message = message if message else DEFAULT_COMMIT
+        self.commit(_message=message, _add=False)
+        self.push(_add=False, _commit=False)
 
-    def get_branch(self):
-        return self._branch
+    # TODO - check the uninterrupted branching on new files
+    def branch(self, target_branch, hopping_mode):
+        """
+        Swith to target_branch if specified, else prompt branch menu.
+        Implements auto-stashing to allow flex branch hopping.
+        :param target_branch:
+        :return:
+        """
+        if not target_branch:
+            branches = [branch.name for branch in list(self.gitops.repo.branches)]
+            if len(branches) == 1:
+                return 'No local branches detected'
+            else:
+                target_branch = self.interact.select('choose terget branch', branches)
+                if not target_branch:
+                    return
+        if hopping_mode:
+            # handle branch hopping in case of untracked files
+            untracked = self.gitops.get_untracked_files()
+            if untracked:
+                self.display.list('Untracked files found', untracked, 'white', 'speak_no_evil')
+                if not self.interact.confirm(f'Stage them to continue?'):
+                    self.display.message('Stage files to branch with gitsy', 'yellow', 'sweat_smile')
+                    return
+                else:
+                    self.display.message('Staging untracked files', 'yellow', 'floppy_disk')
+                    self.gitops.repo.git.add(untracked)
 
-    # def branch(self, target_branch, hopping_mode):
-    #     """
-    #     Swith to target_branch if specified, else prompt branch menu.
-    #     Implements auto-stashing to allow flex branch hopping.
-    #     :param target_branch:
-    #     :return:
-    #     """
-    #     if not target_branch:
-    #         branches = [branch.name for branch in list(self.repo.branches)]
-    #         if len(branches) == 1:
-    #             return 'No local branches detected'
-    #         else:
-    #             target_branch = branch_selector(branches)
-    #             if not target_branch:
-    #                 return
-    #     if hopping_mode:
-    #         # handle branch hopping in case of untracked files
-    #         untracked = self.repo.untracked_files
-    #         if untracked:
-    #             display_list_no_icon('Untracked files found', 'white', untracked)
-    #             if not verify_prompt(f'Stage them to continue?'):
-    #                 display_message('Stage files to branch with gitsy', 'yellow', 'sweat_smile')
-    #                 return
-    #             else:
-    #                 display_message('Staging untracked files', 'yellow', 'floppy_disk')
-    #                 self.repo.git.add(untracked)
-    #
-    #         change_list = self._calculate_change_list(diff_types=['unstaged', 'staged'])
-    #
-    #         if len(change_list) > 0:
-    #             self.repo.git.stash(f'save', f'{GLOBAL_STASH_PREFIX}_{self.get_branch()}')
-    #             display_message(f'Saving diff (stash): {GLOBAL_STASH_PREFIX}_{self.get_branch()}', 'green', 'thumbsup')
+            change_list = self.gitops.get_all_changes()
 
-        # self._switch_branch(target_branch)
-        #
-        # if hopping_mode:
-        #     stash_list = self.repo.git.stash('list')
-        #     stash_stub = f'{GLOBAL_STASH_PREFIX}_{self.get_branch()}'
-        #     if stash_list:
-        #         stash_list = stash_list.split("\n")
-        #
-        #     for stash in stash_list:
-        #         stash_name = stash.split(' ')[-1]
-        #         if stash_stub == stash_name:
-        #             stash_index = stash.split(' ')[0].replace(':', '')
-        #             self.repo.git.stash(f'pop', stash_index)
-        #             display_message(f'Loading diff (stash): {stash_name}', 'green', 'thumbsup')
-        #             break
+            if len(change_list) > 0:
+                self.gitops.repo.git.stash(f'save', f'{GLOBAL_STASH_PREFIX}_{self.gitops.branch}')
+                self.display.message(f'Saving diff (stash): {GLOBAL_STASH_PREFIX}_{self.gitops.branch}', 'green', 'thumbsup')
+
+        self.gitops.switch_branch(target_branch)
+
+        if hopping_mode:
+            stash_list = self.gitops.repo.git.stash('list')
+            stash_stub = f'{GLOBAL_STASH_PREFIX}_{self.gitops.branch}'
+            if stash_list:
+                stash_list = stash_list.split("\n")
+
+            for stash in stash_list:
+                stash_name = stash.split(' ')[-1]
+                if stash_stub == stash_name:
+                    stash_index = stash.split(' ')[0].replace(':', '')
+                    self.gitops.repo.git.stash(f'pop', stash_index)
+                    self.display.message(f'Loading diff (stash): {stash_name}', 'green', 'thumbsup')
+                    break
+
+    def diff(self):
+        change_list = self.gitops.get_changed_files('unstaged')
+        if not change_list:
+            self.display.message('No diff found', 'yellow', 'speak_no_evil')
+
+        file = self.interact.select('select file to view diff', change_list)
+        if not file:
+            return
+        diffs = self.gitops.repo.git.diff(file).split('\n')
+        for diff in diffs:
+            self.display.diff(diff)
 
     def rename(self, name):
         try:
-            self.repo.active_branch.rename(name)
+            self.gitops.repo.active_branch.rename(name)
         except Exception as e:
             print(e)
 
@@ -155,34 +176,6 @@ class Igit:
     #         run_cmd('git add .')
     #         run_cmd('git commit -m ".gitignore fixed"')
 
-    # def up(self, message):
-    #     change_list = self._calculate_change_list(diff_types=['unstaged', 'staged'])
-    #     if change_list:
-    #         self._up(change_list, message)
-    #     else:
-    #         self.display.message('Nothing to send up', 'yellow', 'speak_no_evil')
-    #
-    # def save(self, message):
-    #     change_list = self._calculate_change_list(diff_types=['unstaged'])
-    #
-    #     if change_list:
-    #         self._save(change_list, message)
-    #     else:
-    #         self.display.message('No changes to save', 'yellow', 'speak_no_evil')
-    #
-    # def diff(self):
-    #     change_list = self._calculate_change_list(diff_types=['unstaged'])
-    #     if not change_list:
-    #         self.display.message('No diff found', 'yellow', 'speak_no_evil')
-    #
-    #     # file = file_selector(change_list)
-    #     file = self.interact.select('select file to view diff',change_list)
-    #     if not file:
-    #         return
-    #     diffs = self.gitops.repo.git.diff(file).split('\n')
-    #     for diff in diffs:
-    #         self.display.diff(diff)
-
     # def undo(self, scope):
     #     try:
     #         scope = self._get_scope(scope, 'undo', diff_types=['unstaged'])
@@ -201,31 +194,6 @@ class Igit:
     #     display_list('unstaged', scope)
 
     # ==================== INTERNAL AUX METHODS ====================
-
-    # def _up(self, files, message):
-    #     try:
-    #         self._save(files, message)
-    #         self.display.list('sending up', files, 'cyan', 'rocket')
-    #         # display_list('up', files)
-    #     except GitCommandError as e:
-    #         print(e)
-    #         print(colored(f'pushing without changes', 'cyan'))
-    #     self.repo.git.push('origin', self._branch)
-    #     self.display.message('pushed', 'green', 'thumbsup')
-    #
-    # def _save(self, files, message):
-    #     # display_list('saving', files)
-    #     self.display.list('saving', files, 'yellow', 'floppy_disk')
-    #
-    #     self.repo.git.add(files)
-    #     commit = self.repo.git.commit('-m', message)
-    #     self.display.message(commit, 'white', 'cat')
-    #     self.display.message('saved', 'green', 'thumbsup')
-
-    # def _switch_branch(self, branch_name):
-    #     self.repo.git.checkout(branch_name)
-    #     self._branch = self.repo.active_branch.name
-    #     display_message(f'Switched to branch: {self._branch}', 'yellow', 'checkered_flag')
 
     # def _get_scope(self, scope, method, diff_types):
     #     change_list = self._calculate_change_list(diff_types)
@@ -257,18 +225,14 @@ class Igit:
     #     change_list += self.repo.untracked_files
     #     return change_list
     #
+
     @staticmethod
     def _intersection(iterable1, iterable2):
         return list(set(iterable1).intersection(iterable2))
-    #
-    # @staticmethod
-    # def _file_dir_conditions(root, file):
-    #     file_parents = [p.name for p in list(file.relative_to(root).parents)]
-    #     return '.git' not in file_parents
 
     # ==================== TEST METHODS ====================
 
     def test(self):
         print('=== TEST ROUTE ===')
-        print(self.get_branch())
+        print(self.gitops.branch)
         print('=== END TEST ROUTE ===')

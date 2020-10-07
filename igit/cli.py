@@ -1,8 +1,9 @@
 import os
 from pathlib import Path
-from igit.core.config import DEFAULT_COMMIT
-from igit.core.commands import Igit
+
 import click
+
+from igit.core.commands import Igit
 
 
 @click.group()
@@ -10,132 +11,93 @@ def cli():
     pass
 
 
-@cli.command()
+@cli.command(help='TODO')
 @click.option('--file', default=[], help='file to add', multiple=True)
 @click.option('--all', is_flag=True, default=False, help='add all unstaged changes')
 def add(file, all):
     Igit().add(file, all)
 
 
-@cli.command()
+@cli.command(help='TODO')
 @click.option('--message', '-m', default=None, help='commit message')
 @click.option('--add', '-a', is_flag=True, default=False, help='add all unstaged changes')
 def commit(message, add):
     Igit().commit(message, add)
 
 
-@cli.command()
+@cli.command(help='TODO')
+@click.option('--add', '-a', is_flag=True, default=False, help='add all unstaged changes and commit')
+@click.option('--commit', '-c', is_flag=True, default=False, help='commit all changes')
+def push(add, commit):
+    Igit().push(add, commit)
+
+
+@cli.command(help='Adds and Commits changes')
+@click.option('--message', default=None, help='commit message (optional)')
+def save(message):
+    Igit().save(message)
+
+
+@cli.command(help='Adds, Commits and Pushes changes to remote')
+@click.option('--message', default=None, help='commit message (optional)')
+def up(message):
+    Igit().up(message)
+
+
+@cli.command(help='Switch to another branch')
 @click.option('--name', '-n', default=None, help='target branch to switch to')
 @click.option('--hopping_on', '-h', is_flag=True, default=False, help='activate branch hopping')
 def branch(name, hopping_on):
-    """
-    Switch to another branch.
-    """
     return Igit().branch(name, hopping_on)
 
 
-
-
-
-
-
-@cli.command()
-def push():
-    # TODO - implement
-    return 'NOT IMPLEMENTED'
-
-
-@cli.command()
-@click.option('--message', default=DEFAULT_COMMIT, help='commit message')
-def save(message):
-    """
-    Adds and Commits changes.
-    :param message: (optional) Commit message.
-    """
-    igit = Igit()
-    return igit.save(message)
-
-
-@cli.command()
-@click.option('--message', default=DEFAULT_COMMIT, help='commit message')
-def up(message):
-    """
-    Adds, Commits and Pushed changes to remote.
-    :param message: (optional) Commit message.
-    """
-    return Igit().up(message)
-
-
-@cli.command()
+@cli.command(help='Prints diff of selected file')
 def diff():
-    """
-    Prints diff of selected file.
-    """
     return Igit().diff()
 
 
-@cli.command()
+@cli.command(help='Undo un-staged (non added) changes')
 @click.option('--scope', default=[], help='list files to undo')
 def undo(*scope):
-    """
-    Undo un-staged (non added) changes.
-    :param optional file list as scope:
-    """
     return Igit().undo(scope)
 
 
-@cli.command()
+@cli.command(help='Undo staged (added) changes.')
 @click.option('--scope', default=[], help='list files to regret')
 def regret(*scope):
-    """
-    Undo staged (added) changes.
-    :param optional file list as scope:
-    """
     return Igit().regret(scope)
 
 
-@cli.command()
+@cli.command(help='TODO')
 def revert():
     # TODO - implement
     return 'NOT IMPLEMENTED'
 
 
-@cli.command()
-# @click.option('--name', default='', help='Who are you?')
+@cli.command(help='Rename current branch')
+@click.argument('name')
 def rename(name):
-    """
-    Rename current branch.
-    :param required new branch name:
-    """
     return Igit().rename(name)
 
 
-@cli.command()
+@cli.command(help='Perform .gitignore modifications: add, remove, sync with remote, etc.')
 @click.option('--opt', default=None, help='todo - ignore operations')
 def ignore(opt=None):
-    """
-    Enable gitignore modifications: add, remove.
-    Syncs gitignore to remote.
-    """
     return Igit().ignore(opt)
 
 
-@cli.command()
-# @click.option('--name', default='', help='Who are you?')
-def test():
-    """
-    Route for dev purposes
-    """
-    return Igit().test()
-
-
-@cli.command()
+@cli.command(help='Print igit version')
 def version():
     here = Path(__file__).parent.absolute()
     package_conf = {}
     with open(os.path.join(here, "__version__.py")) as f:
         exec(f.read(), package_conf)
     print(package_conf['__version__'])
+
+
+@cli.command(help='Route for dev purposes')
+def test():
+    return Igit().test()
 
 
 if __name__ == "__main__":

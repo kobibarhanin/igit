@@ -17,7 +17,7 @@ class Display:
         _emoji, _emoji_render_method = self.emojize(icon)
         self._display(f'{_emoji} - {text}:', color, _emoji_render_method)
         for item in items:
-            self._display("- " + item, color, _emoji_render_method)
+            self._display("   * " + item, color, _emoji_render_method)
 
     def emojize(self, icon):
         icon = f':{icon}:'
@@ -34,13 +34,13 @@ class Display:
     @classmethod
     def diff(cls, diff):
         if diff.startswith('+++') or diff.startswith('---'):
-            cls._display(diff, 'white')
+            print(colored(diff, 'white'))
         elif diff.startswith('+'):
-            cls._display(diff, 'green')
+            print(colored(diff, 'green'))
         elif diff.startswith('-'):
-            cls._display(diff, 'red')
+            print(colored(diff, 'red'))
         else:
-            cls._display(diff, 'white')
+            print(colored(diff, 'white'))
 
     @staticmethod
     def _display(text, color, emoji_method=lambda *args, **kwargs: args):
