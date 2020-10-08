@@ -1,5 +1,6 @@
 from pathlib import Path
 
+# TODO - refactor into object
 
 # input - base path, exclude directories, exclude files
 # output - list of all files that are not excluded or in excluded directories
@@ -13,6 +14,7 @@ def in_stem(fs_element, excluded_dirs):
 
 
 def get_files(base_path, excluded_dirs=None, excluded_files=None):
+    print(base_path, excluded_dirs)
     files = []
     for file in base_path.rglob('*'):
         file_rel_path = file.relative_to(base_path)
@@ -30,4 +32,8 @@ if __name__ == "__main__":
     ex_dirs = [Path(ex_dir) for ex_dir in ['.git', '.gitsy']]
     ex_files = [Path(ex_file) for ex_file in ['data3.txt']]
 
-    print(get_files(repo_path, ex_dirs, ex_files))
+    files_objects = get_files(repo_path, ex_dirs, ex_files)
+    print(files_objects)
+
+    files_objects = [str(file) for file in files_objects]
+    print(files_objects)

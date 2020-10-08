@@ -3,9 +3,9 @@ import os
 from git import InvalidGitRepositoryError
 from git import GitCommandError
 
-from igit.core.shell_ops import run_cmd
 from igit.interactive.display import Display
 from igit.interactive.interact import Interact
+from igit.core.shell_ops import Shell
 from igit.core.config import *
 
 from igit.core.git_ops import in_gitignore, add_gitignore, GitOps
@@ -145,94 +145,78 @@ class Igit:
         except Exception as e:
             print(e)
 
-    # # TODO - sub cmds: add, remove, list, reset
-    # def ignore(self, opt):
-    #     if opt is None:
-    #         from pathlib import Path
-    #         path = Path(self.repo_path)
-    #         # collect all files in repo
-    #         opt_files = [str(file.relative_to(self.repo_path))
-    #                      for file in list(path.rglob('*'))
-    #                      if self._file_dir_conditions(self.repo_path, file)]
-    #         # subtract files that are already added
-    #         if not opt_files:
-    #             return 'No files found to add.'
-    #         else:
-    #             files = files_checkboxes(list(opt_files), 'add')
-    #             if files:
-    #                 try:
-    #                     gitignore_path = os.path.join(self.repo_path, '.gitignore')
-    #                     for file in files:
-    #                         if not in_gitignore(gitignore_path, file):
-    #                             add_gitignore(gitignore_path, file)
-    #                 except Exception as e:
-    #                     print(f'No gitignore file found: {e}')
-    #             else:
-    #                 self.display.message('gitignore unchanged (use space key to select!)', 'yellow', 'speak_no_evil')
-    #
-    #     elif opt == 'reset':
-    #         # self.repo.index.remove('.', '-r')
-    #         run_cmd('git rm -r --cached .')
-    #         run_cmd('git add .')
-    #         run_cmd('git commit -m ".gitignore fixed"')
+    def undo(self, _files, _all):
+        try:
+            unstaged = self.gitops.get_changed_files('unstaged')
+            if unstaged:
+                if _all:
+                    selected = unstaged
+                elif _files:
+                    selected = self._intersection(_files, unstaged)
+                else:
+                    selected = self.interact.choose('choose files to undo changes', unstaged)
+                if selected:
+                    self.gitops.repo.git.checkout('--', selected)
+                    self.display.list('changes undone', selected, 'green', 'thumbsup')
+                else:
+                    self.display.message('command had no effect', 'yellow', 'speak_no_evil')
+            else:
+                self.display.message('nothing to undo', 'yellow', 'speak_no_evil')
+        except GitCommandError as e:
+            self.display.message(f'unable to undo\n{e}', 'red', 'x')
 
-    # def undo(self, scope):
-    #     try:
-    #         scope = self._get_scope(scope, 'undo', diff_types=['unstaged'])
-    #     except Exception as e:
-    #         return e
-    #     if scope:
-    #         self.repo.git.checkout('--', list(scope))
-    #         display_list('undo', scope)
-    #
-    # def regret(self, scope):
-    #     try:
-    #         scope = self._get_scope(scope, 'regret', diff_types=['staged'])
-    #     except Exception as e:
-    #         return e
-    #     self.repo.git.reset('--', scope)
-    #     display_list('unstaged', scope)
+    def unstage(self, _files, _all):
+        try:
+            unstaged = self.gitops.get_changed_files('staged')
+            if unstaged:
+                if _all:
+                    selected = unstaged
+                elif _files:
+                    selected = self._intersection(_files, unstaged)
+                else:
+                    selected = self.interact.choose('choose files to unstage', unstaged)
+                if selected:
+                    self.gitops.repo.git.reset('--', selected)
+                    self.display.list('files unstaged', selected, 'green', 'thumbsup')
+                else:
+                    self.display.message('command had no effect', 'yellow', 'speak_no_evil')
+            else:
+                self.display.message('nothing to unstage', 'yellow', 'speak_no_evil')
+        except GitCommandError as e:
+            self.display.message(f'unable to unstage\n{e}', 'red', 'x')
 
-    # ==================== INTERNAL AUX METHODS ====================
+    # TODO - sub cmds: add, remove, list, reset
+    def ignore(self, reset):
+        if reset:
+            shell = Shell()
+            shell >> 'git rm -r --cached .'
+            shell >> 'git add .'
+            shell >> 'git commit -m ".gitignore fixed"'
 
-    # def _get_scope(self, scope, method, diff_types):
-    #     change_list = self._calculate_change_list(diff_types)
-    #     if len(scope) == 0:
-    #         if len(change_list) > 0:
-    #             scope = files_checkboxes(change_list, method)
-    #         else:
-    #             raise Exception(f'No actionable items found')
-    #     elif scope[0] == 'all':
-    #         if len(scope) < 2 or not scope[1] == 'allow':
-    #             if not verify_prompt(f'This will {method} all staged changes'):
-    #                 return
-    #         scope = change_list
-    #     else:
-    #         scope = [value for value in scope
-    #                  if value in change_list]
-    #     return scope
+        else:
+            from pathlib import Path
+            from igit.core.fs_ops import get_files
+            ex_dirs = [Path(ex_dir) for ex_dir in ['.git']]
+            opt_files = get_files(Path(self.gitops.repo_path), ex_dirs, [])
+            opt_files = [str(file) for file in opt_files]
 
-    # def _calculate_change_list(self, diff_types=None):
-    #     change_list = []
-    #     for diff_type in diff_types:
-    #
-    #         from_diff_type = [item.a_path for item
-    #                           in self.repo.index.diff(GitOps.change_types[diff_type])]
-    #         print(f'in diff type {diff_type} = {from_diff_type}')
-    #
-    #         change_list += [item.a_path for item
-    #                         in self.repo.index.diff(GitOps.change_types[diff_type])]
-    #     change_list += self.repo.untracked_files
-    #     return change_list
-    #
+            # subtract files that are already added
+            if not opt_files:
+                return 'No files found to add.'
+            else:
+                # files = files_checkboxes(list(opt_files), 'add')
+                files = self.interact.choose('select files to gitignore', opt_files)
+                if files:
+                    try:
+                        gitignore_path = os.path.join(self.gitops.repo_path, '.gitignore')
+                        for file in files:
+                            if not in_gitignore(gitignore_path, file):
+                                add_gitignore(gitignore_path, file)
+                    except Exception as e:
+                        print(f'No gitignore file found: {e}')
+                else:
+                    self.display.message('gitignore unchanged (use space key to select!)', 'yellow', 'speak_no_evil')
 
     @staticmethod
     def _intersection(iterable1, iterable2):
         return list(set(iterable1).intersection(iterable2))
-
-    # ==================== TEST METHODS ====================
-
-    def test(self):
-        print('=== TEST ROUTE ===')
-        print(self.gitops.branch)
-        print('=== END TEST ROUTE ===')

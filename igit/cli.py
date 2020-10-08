@@ -57,15 +57,17 @@ def diff():
 
 
 @cli.command(help='Undo un-staged (non added) changes')
-@click.option('--scope', default=[], help='list files to undo')
-def undo(*scope):
-    return Igit().undo(scope)
+@click.option('--file', default=[], help='file to add', multiple=True)
+@click.option('--all', is_flag=True, default=False, help='undo all unstaged changes')
+def undo(file, all):
+    return Igit().undo(file, all)
 
 
-@cli.command(help='Undo staged (added) changes.')
-@click.option('--scope', default=[], help='list files to regret')
-def regret(*scope):
-    return Igit().regret(scope)
+@cli.command(help='Unstage changes')
+@click.option('--file', default=[], help='file to add', multiple=True)
+@click.option('--all', is_flag=True, default=False, help='unstage all files')
+def unstage(file, all):
+    return Igit().unstage(file, all)
 
 
 @cli.command(help='TODO')
@@ -81,9 +83,9 @@ def rename(name):
 
 
 @cli.command(help='Perform .gitignore modifications: add, remove, sync with remote, etc.')
-@click.option('--opt', default=None, help='todo - ignore operations')
-def ignore(opt=None):
-    return Igit().ignore(opt)
+@click.option('--reset', is_flag=True, default=False, help='resets gitignore')
+def ignore(reset):
+    return Igit().ignore(reset)
 
 
 @cli.command(help='Print igit version')
@@ -93,11 +95,6 @@ def version():
     with open(os.path.join(here, "__version__.py")) as f:
         exec(f.read(), package_conf)
     print(package_conf['__version__'])
-
-
-@cli.command(help='Route for dev purposes')
-def test():
-    return Igit().test()
 
 
 if __name__ == "__main__":
