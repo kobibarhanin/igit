@@ -16,7 +16,7 @@ RUN sudo apt -y install python3-pip && \
     pip3 install --upgrade pip && \
     pip3 install pipenv
 
-WORKDIR /home/gitsy
+WORKDIR /home/igit
 COPY Pipfile .
 COPY Pipfile.lock .
 RUN pipenv install

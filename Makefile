@@ -1,6 +1,6 @@
 test: build
-	docker run gitsy_stage
+	docker run igit_test
 
 
 build: Dockerfile
-	docker build --rm -t gitsy_stage .
+	docker build --rm -t igit_test .

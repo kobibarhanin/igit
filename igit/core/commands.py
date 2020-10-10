@@ -13,9 +13,9 @@ from igit.core.git_ops import in_gitignore, add_gitignore, GitOps
 
 class Igit:
 
-    def __init__(self):
+    def __init__(self, path=os.getcwd()):
         try:
-            self.gitops = GitOps()
+            self.gitops = GitOps(path)
             self.display = Display()
             self.interact = Interact()
         except InvalidGitRepositoryError:
