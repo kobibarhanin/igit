@@ -7,7 +7,7 @@ with open("README.md", "r") as fh:
 package_conf = {}
 
 here = os.path.abspath(os.path.dirname(__file__))
-with open(os.path.join(here, "cli", "version.py")) as f:
+with open(os.path.join(here, "igit", "__version__.py")) as f:
     exec(f.read(), package_conf)
 
 setuptools.setup(

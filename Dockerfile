@@ -32,4 +32,7 @@ RUN git checkout state_a && \
     git config --global user.name "abc" && \
     git config --global user.email "abc@example.com"
 
-CMD /root/.local/share/virtualenvs/gitsy-382rVgWt/bin/python3.7 -m pytest -v -s --source_dir /home/gitsy --test_dir /home/gitsy_stage  ../gitsy/tests
+ENV test_dir=/home/gitsy_stage
+ENV source_dir=/home/igit/igit
+
+CMD /root/.local/share/virtualenvs/igit-jeZuJjfX/bin/python3.7 -m pytest -v -s -q  ../igit/igit/tests
