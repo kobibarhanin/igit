@@ -25,14 +25,14 @@ COPY . .
 RUN pipenv install --skip-lock -e .
 
 WORKDIR /home
-RUN git clone https://github.com/kobibarhanin/gitsy_stage.git
-WORKDIR /home/gitsy_stage
+RUN git clone https://github.com/kobibarhanin/igit_test.git
+WORKDIR /home/igit_test
 
 RUN git checkout state_a && \
     git config --global user.name "abc" && \
     git config --global user.email "abc@example.com"
 
-ENV test_dir=/home/gitsy_stage
+ENV test_dir=/home/igit_test
 ENV source_dir=/home/igit/igit
 
 CMD /root/.local/share/virtualenvs/igit-jeZuJjfX/bin/python3.7 -m pytest -v -s -q  ../igit/igit/tests
