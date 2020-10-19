@@ -8,26 +8,29 @@ from igit.core.commands import Igit
 
 @click.group()
 def cli():
+    """
+    Interactive Git for better git experience.
+    """
     pass
 
 
-@cli.command(help='TODO')
+@cli.command(help='add unstaged files')
 @click.option('--file', default=[], help='file to add', multiple=True)
-@click.option('--all', is_flag=True, default=False, help='add all unstaged changes')
+@click.option('--all', '-a', is_flag=True, default=False, help='add all unstaged files')
 def add(file, all):
     Igit().add(file, all)
 
 
-@cli.command(help='TODO')
+@cli.command(help='commit changes')
 @click.option('--message', '-m', default=None, help='commit message')
-@click.option('--add', '-a', is_flag=True, default=False, help='add all unstaged changes')
+@click.option('--add', '-a', is_flag=True, default=False, help='add before commit')
 def commit(message, add):
     Igit().commit(message, add)
 
 
-@cli.command(help='TODO')
-@click.option('--add', '-a', is_flag=True, default=False, help='add all unstaged changes and commit')
-@click.option('--commit', '-c', is_flag=True, default=False, help='commit all changes')
+@cli.command(help='push changes')
+@click.option('--add', '-a', is_flag=True, default=False, help='add --all and commit before push')
+@click.option('--commit', '-c', is_flag=True, default=False, help='push to remote')
 def push(add, commit):
     Igit().push(add, commit)
 
@@ -70,7 +73,7 @@ def unstage(file, all):
     return Igit().unstage(file, all)
 
 
-@cli.command(help='TODO')
+@cli.command(help='revert commit (NOT IMPLEMENTED)')
 def revert():
     # TODO - implement
     return 'NOT IMPLEMENTED'
@@ -99,6 +102,6 @@ def version():
 
 if __name__ == "__main__":
     try:
-        cli()
+        cli(prog_name='igit')
     except Exception as e:
         print(e)
