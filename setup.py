@@ -22,7 +22,7 @@ setuptools.setup(
     packages=setuptools.find_packages(),
     entry_points={
         "console_scripts": [
-            "igit=igit:cli",
+            "igit=igit.cli:run",
         ]
     },
     classifiers=[

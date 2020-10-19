@@ -100,8 +100,12 @@ def version():
     print(package_conf['__version__'])
 
 
-if __name__ == "__main__":
+def run():
     try:
         cli(prog_name='igit')
     except Exception as e:
         print(e)
+
+
+if __name__ == "__main__":
+    run()
