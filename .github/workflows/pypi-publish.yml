@@ -30,6 +30,6 @@ jobs:
         TWINE_USERNAME: ${{ secrets.PYPI_USERNAME }}
         TWINE_PASSWORD: ${{ secrets.PYPI_PASSWORD }}
       run: |
-        echo "__version__ = '${{ github.event.inputs.version }}'" > cli/version.py
+        echo "__version__ = '${{ github.event.inputs.version }}'" > igit/__version__.py
         python setup.py sdist bdist_wheel
         twine upload dist/*
