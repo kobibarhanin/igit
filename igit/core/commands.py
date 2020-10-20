@@ -52,7 +52,7 @@ class Igit:
             self.add(_files=None, _all=True)
         try:
             self.gitops.repo.git.commit('-m', _message)
-            self.display.message('commited', 'green', 'thumbsup')
+            self.display.message('commited', 'green', 'floppy_disk')
         except GitCommandError as e:
             self.display.message(f'unable to commit\n{e}', 'red', 'x')
 
@@ -64,7 +64,7 @@ class Igit:
             self.commit(_message=None, _add=False)
         try:
             self.gitops.repo.git.push('origin', self.gitops.branch)
-            self.display.message('pushed', 'green', 'thumbsup')
+            self.display.message('pushed', 'cyan', 'rocket')
         except GitCommandError as e:
             self.display.message(f'unable to push\n{e}', 'red', 'x')
 

@@ -19,8 +19,6 @@ With [pip](https://pip.pypa.io/en/stable/):
 
 ```bash
 pip install igit
-pipenv install igit
-poetry add igit
 ```
 
 ## Usage
