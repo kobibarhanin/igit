@@ -51,8 +51,9 @@ class Igit:
         if _add:
             self.add(_files=None, _all=True)
         try:
-            self.gitops.repo.git.commit('-m', _message)
-            self.display.message('commited', 'green', 'floppy_disk')
+            commit_resp = self.gitops.repo.git.commit('-m', _message)
+            self.display.message(commit_resp, 'white', 'cat')
+            self.display.message('committed', 'yellow', 'floppy_disk')
         except GitCommandError as e:
             self.display.message(f'unable to commit\n{e}', 'red', 'x')
 
