@@ -2,7 +2,6 @@ import os
 
 from git import Repo
 from git import InvalidGitRepositoryError
-from git import GitCommandError
 from igit.interactive.display import Display
 
 

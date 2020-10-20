@@ -1,8 +1,10 @@
 import os
+from pathlib import Path
 
 from git import InvalidGitRepositoryError
 from git import GitCommandError
 
+from igit.core.fs_ops import get_files
 from igit.interactive.display import Display
 from igit.interactive.interact import Interact
 from igit.core.shell_ops import Shell
@@ -194,8 +196,6 @@ class Igit:
             shell >> 'git commit -m ".gitignore fixed"'
 
         else:
-            from pathlib import Path
-            from igit.core.fs_ops import get_files
             ex_dirs = [Path(ex_dir) for ex_dir in ['.git']]
             opt_files = get_files(Path(self.gitops.repo_path), ex_dirs, [])
             opt_files = [str(file) for file in opt_files]
@@ -204,7 +204,6 @@ class Igit:
             if not opt_files:
                 return 'No files found to add.'
             else:
-                # files = files_checkboxes(list(opt_files), 'add')
                 files = self.interact.choose('select files to gitignore', opt_files)
                 if files:
                     try:

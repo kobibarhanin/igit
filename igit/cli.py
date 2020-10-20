@@ -2,9 +2,11 @@ import os
 from pathlib import Path
 
 import click
-from click_help_colors import HelpColorsGroup, HelpColorsCommand
+from click_help_colors import HelpColorsGroup
+from git import InvalidGitRepositoryError
 
 from igit.core.commands import Igit
+from igit.interactive.display import Display
 
 
 @click.group(
@@ -108,7 +110,7 @@ def rename(name):
     return Igit().rename(name)
 
 
-@cli.command(help='Perform .gitignore modifications: add, remove, sync with remote, etc.')
+@cli.command(help='Perform .gitignore operations.')
 @click.option('--reset', is_flag=True, default=False, help='resets gitignore')
 def ignore(reset):
     return Igit().ignore(reset)
@@ -126,8 +128,10 @@ def version():
 def run():
     try:
         cli(prog_name='igit')
+    except InvalidGitRepositoryError as e:
+        Display().message(e, 'yellow', 'sweat_smile')
     except Exception as e:
-        print(e)
+        Display().message(f'Encountered an error: {e}', 'red', 'x')
 
 
 if __name__ == "__main__":

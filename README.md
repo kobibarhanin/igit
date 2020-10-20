@@ -24,6 +24,7 @@ poetry add igit
 ```
 
 ## Usage
+![MIT](examples/help.png)
 
 
 ## License
