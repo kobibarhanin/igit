@@ -4,23 +4,21 @@ url = "https://pypi.org/simple"
 verify_ssl = true
 
 [dev-packages]
+pytest = "*"
+pylint = "*"
 
 [packages]
-fire = "*"
 termcolor = "*"
-pyyaml = "*"
-pytest = "*"
 gitpython = "*"
+pyinquirer = "*"
 inquirer = "*"
 emoji = "*"
-pylint = "*"
-pyinquirer = "*"
 gitignore-parser = "*"
 psutil = "*"
-python-dotenv = "*"
-click = "*"
 pathlib2 = "*"
+click = "*"
 invoke = "*"
+click-help-colors = "*"
 
 [requires]
 python_version = "3.7"

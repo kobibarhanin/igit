@@ -17,7 +17,7 @@ class Display:
         _emoji, _emoji_render_method = self.emojize(icon)
         self._display(f'{_emoji} - {text}:', color, _emoji_render_method)
         for item in items:
-            self._display("   * " + item, color, _emoji_render_method)
+            self._display("   * " + item, 'white', _emoji_render_method)
 
     def emojize(self, icon):
         icon = f':{icon}:'

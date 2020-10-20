@@ -19,7 +19,7 @@ RUN sudo apt -y install python3-pip && \
 WORKDIR /home/igit
 COPY Pipfile .
 COPY Pipfile.lock .
-RUN pipenv install
+RUN pipenv install --dev
 
 COPY . .
 RUN pipenv install --skip-lock -e .
