@@ -9,7 +9,7 @@ class Display:
     def __init__(self, os_type=os.name) -> None:
         self.os_type = os_type
 
-    def message(self, text, color, icon):
+    def message(self, text, color='white', icon='poop'):
         _emoji, _emoji_render_method = self.emojize(icon)
         self._display(f'{_emoji} - {text}', color, _emoji_render_method)
 

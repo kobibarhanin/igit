@@ -46,6 +46,10 @@ class GitOps:
         self.branch = self.repo.active_branch.name
         self.display.message(f'Switched to branch: {self.branch}', 'yellow', 'checkered_flag')
 
+    def create_branch(self, branch_name):
+        self.repo.create_head(branch_name)
+        self.switch_branch(branch_name)
+
 
 def in_gitignore(gitignore_path, item):
     gitignore = []

@@ -81,21 +81,32 @@ class Igit:
         self.push(_add=False, _commit=False)
 
     # TODO - check the uninterrupted branching on new files
-    def branch(self, target_branch, hopping_mode):
+    def branch(self, target_branch, hopping_mode, create_new):
         """
         Swith to target_branch if specified, else prompt branch menu.
         Implements auto-stashing to allow flex branch hopping.
         :param target_branch:
         :return:
         """
+        if create_new:
+            branch_name = Interact().text('Give it a name')
+            self.gitops.create_branch(branch_name)
+            return
+
         if not target_branch:
             branches = [branch.name for branch in list(self.gitops.repo.branches)]
             if len(branches) == 1:
-                return 'No local branches detected'
+                create_new = Interact().confirm('No local branches detected. create new?')
+                if create_new:
+                    branch_name = Interact().text('Give it a name')
+                    self.gitops.create_branch(branch_name)
+                    return
+                return
             else:
                 target_branch = self.interact.select('choose terget branch', branches)
                 if not target_branch:
                     return
+
         if hopping_mode:
             # handle branch hopping in case of untracked files
             untracked = self.gitops.get_untracked_files()
