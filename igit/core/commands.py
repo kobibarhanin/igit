@@ -53,7 +53,7 @@ class Igit:
         try:
             commit_resp = self.gitops.repo.git.commit('-m', _message)
             self.display.message(commit_resp, 'white', 'cat')
-            self.display.message('committed', 'yellow', 'floppy_disk')
+            self.display.message('committed', 'yellow', 'lock')
         except GitCommandError as e:
             self.display.message(f'unable to commit\n{e}', 'red', 'x')
 
