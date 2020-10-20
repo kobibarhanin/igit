@@ -6,7 +6,6 @@ __pycache__/
 dist/
 gitsy.egg-info/
 
-TODO
 .archive/
 .vscode/
 .gitsy/
@@ -14,4 +13,4 @@ TODO
 /core/dev/
 
 .env
-/.archive/
+todo.md
