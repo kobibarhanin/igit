@@ -113,7 +113,7 @@ class Igit:
             if untracked:
                 self.display.list('Untracked files found', untracked, 'white', 'speak_no_evil')
                 if not self.interact.confirm(f'Stage them to continue?'):
-                    self.display.message('Stage files to branch with gitsy', 'yellow', 'sweat_smile')
+                    self.display.message('Stage files to branch with igit', 'yellow', 'sweat_smile')
                     return
                 else:
                     self.display.message('Staging untracked files', 'yellow', 'floppy_disk')

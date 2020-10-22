@@ -66,7 +66,7 @@ def add_gitignore(gitignore_path, item):
 
 
 if __name__ == '__main__':
-    dir_path = '/Users/kobarhan/workspace/gitsy_test'
+    dir_path = '/Users/kobarhan/workspace/igit_test'
     gc = GitOps(dir_path)
 
     staged = gc.get_changed_files('staged')
