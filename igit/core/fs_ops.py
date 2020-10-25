@@ -14,7 +14,6 @@ def in_stem(fs_element, excluded_dirs):
 
 
 def get_files(base_path, excluded_dirs=None, excluded_files=None):
-    print(base_path, excluded_dirs)
     files = []
     for file in base_path.rglob('*'):
         file_rel_path = file.relative_to(base_path)

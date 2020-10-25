@@ -1,6 +1,7 @@
 import os
 from pathlib import Path
 
+import requests
 from git import InvalidGitRepositoryError
 from git import GitCommandError
 
@@ -51,9 +52,12 @@ class Igit:
         if _add:
             self.add(_files=None, _all=True)
         try:
-            commit_resp = self.gitops.repo.git.commit('-m', _message)
-            self.display.message(commit_resp, 'white', 'cat')
-            self.display.message('committed', 'yellow', 'lock')
+            if len(self.gitops.repo.index.diff("HEAD")) > 0:
+                commit_resp = self.gitops.repo.git.commit('-m', _message)
+                self.display.message(commit_resp, 'white', 'cat')
+                self.display.message('committed', 'yellow', 'lock')
+            else:
+                self.display.message('nothing to commit', 'yellow', 'lock')
         except GitCommandError as e:
             self.display.message(f'unable to commit\n{e}', 'red', 'x')
 
@@ -80,7 +84,6 @@ class Igit:
         self.commit(_message=message, _add=False)
         self.push(_add=False, _commit=False)
 
-    # TODO - check the uninterrupted branching on new files
     def branch(self, target_branch, hopping_mode, create_new):
         """
         Swith to target_branch if specified, else prompt branch menu.
@@ -199,13 +202,23 @@ class Igit:
         except GitCommandError as e:
             self.display.message(f'unable to unstage\n{e}', 'red', 'x')
 
-    # TODO - sub cmds: add, remove, list, reset
-    def ignore(self, reset):
+    def ignore(self, reset, create):
+        # check for .gitignore file, prompt to create if none detected
+        gitignore_path = os.path.join(self.gitops.repo_path, '.gitignore')
+
+        if create:
+            self.gitops.create_gitignore(gitignore_path)
+            return
+
+        if not os.path.exists(gitignore_path):
+            if self.interact.confirm('no gitignore file detected, create new?'):
+                self.gitops.create_gitignore(gitignore_path)
+                return
+
         if reset:
             shell = Shell()
             shell >> 'git rm -r --cached .'
-            shell >> 'git add .'
-            shell >> 'git commit -m ".gitignore fixed"'
+            self.commit('.gitignore fixed by igit', True)
 
         else:
             ex_dirs = [Path(ex_dir) for ex_dir in ['.git']]
@@ -219,7 +232,6 @@ class Igit:
                 files = self.interact.choose('select files to gitignore', opt_files)
                 if files:
                     try:
-                        gitignore_path = os.path.join(self.gitops.repo_path, '.gitignore')
                         for file in files:
                             if not in_gitignore(gitignore_path, file):
                                 add_gitignore(gitignore_path, file)
@@ -227,6 +239,7 @@ class Igit:
                         print(f'No gitignore file found: {e}')
                 else:
                     self.display.message('gitignore unchanged (use space key to select!)', 'yellow', 'speak_no_evil')
+
 
     @staticmethod
     def _intersection(iterable1, iterable2):

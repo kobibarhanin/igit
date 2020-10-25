@@ -1,8 +1,10 @@
 import os
 
+import requests
 from git import Repo
 from git import InvalidGitRepositoryError
 from igit.interactive.display import Display
+from igit.interactive.interact import Interact
 
 
 class GitOps:
@@ -18,6 +20,7 @@ class GitOps:
             self.repo_path = os.path.dirname(self.repo.git_dir)
             self.branch = self.repo.active_branch
             self.display = Display()
+            self.interact = Interact()
 
         except InvalidGitRepositoryError:
             raise InvalidGitRepositoryError('Not a git repo, I have no power here...')
@@ -49,6 +52,27 @@ class GitOps:
     def create_branch(self, branch_name):
         self.repo.create_head(branch_name)
         self.switch_branch(branch_name)
+
+    def create_gitignore(self, gitignore_path):
+        if os.path.exists(gitignore_path):
+            self.display.message('Attention - gitignore file detected,'
+                                 'creating a new one will overwrite existing',
+                                 color='red',
+                                 icon='exclamation')
+        rv = self.interact.confirm('Create from template [y] or blank [N]')
+        if rv is None:
+            return
+        if rv:
+            gitignore_files = ['Python', 'Java', 'Go', 'Swift', 'Node', 'C', 'C++']
+            rv = self.interact.select('What kind of .gitignore do you need', gitignore_files)
+            url = f'https://raw.githubusercontent.com/github/gitignore/master/{rv}.gitignore'
+            r = requests.get(url)
+            with open(gitignore_path, 'wb') as f:
+                f.write(r.content)
+        else:
+            open(gitignore_path, 'a').close()
+        self.display.message('Created .gitignore', icon='tada')
+        return
 
 
 def in_gitignore(gitignore_path, item):

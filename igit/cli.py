@@ -113,8 +113,9 @@ def rename(name):
 
 @cli.command(help='Perform .gitignore operations.')
 @click.option('--reset', is_flag=True, default=False, help='resets gitignore')
-def ignore(reset):
-    return Igit().ignore(reset)
+@click.option('--create', is_flag=True, default=False, help='create gitignore filr from template')
+def ignore(reset, create):
+    return Igit().ignore(reset, create)
 
 
 @cli.command(help='Prints igit version.')

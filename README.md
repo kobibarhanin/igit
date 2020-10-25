@@ -41,8 +41,9 @@ igit up "commit message"
 ![up](examples/up_cmd.png)
 
 #### Notes:
-- note 1
-- note 2
+- If you don't specify a commit message it will default to 'fast commit'.
+- Same goes for ```igit save``` - without pushing to remote.
+
 
 ### Undo changes
 
@@ -56,7 +57,7 @@ igit undo
 ![undo](examples/undo_cmd.png)
 
 #### Notes:
-- Same goes unstage.
+- Same goes for ```igit unstage``` with respect to added files.
 
 
 ### Branch hopping
@@ -70,7 +71,8 @@ igit branch --hopping_on
 ![branch](examples/branch_cmd.png)
 
 #### Notes:
-- When in hopping mode all change are stored to the git stash.
+- When in hopping mode all change are stored to the git stash. 
+You can use ```git stash list``` to see stashed changes and ```git stash pop``` to retrieve stashed changes
 
 
 ### Branch hopping
@@ -84,8 +86,12 @@ igit ignore --create
 ![ignore](examples/ignore_cmd.png)
 
 #### Notes:
-- TBD
-
+- In case your local .gitignore is not in sync with your remote .gitignore you can use: 
+```bash
+# Reset .gitignore:
+igit ignore --reset 
+```
+And then push to remote - your current .gitignore will take effect. 
 
 ## Compatibility
 igit is cross-platform → Windows, macOS, Linux 
