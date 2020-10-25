@@ -26,7 +26,7 @@ class Display:
             res_icon = '*'
             shell = psutil.Process(os.getpid()).parent().parent().name()
             if shell == 'powershell.exe':
-                res_icon = EMOJI_ALIAS_UNICODE[f':{icon}:']
+                res_icon = EMOJI_ALIAS_UNICODE[icon]
             return res_icon,
         else:
             return icon, emoji.emojize
