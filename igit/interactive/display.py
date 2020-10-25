@@ -27,7 +27,7 @@ class Display:
             shell = psutil.Process(os.getpid()).parent().parent().name()
             if shell == 'powershell.exe':
                 res_icon = EMOJI_ALIAS_UNICODE[icon]
-            return res_icon,
+            return res_icon, lambda *args, **kwargs: args
         else:
             return icon, emoji.emojize
 
@@ -49,6 +49,6 @@ class Display:
 
 if __name__ == '__main__':
 
-    display = Display()
+    display = Display(os_type='nt')
     display.message('hello', 'green', 'thumbsup')
     display.list('hello', ['item1', 'item2'], 'green', 'thumbsup')
