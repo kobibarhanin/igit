@@ -44,6 +44,10 @@ igit up "commit message"
 
 ![up](examples/up_cmd.png)
 
+#### Or:
+You can also go through the whole interactive process:
+![up](examples/full_push_cmd.png)
+
 #### Notes:
 - If you don't specify a commit message it will default to 'fast commit'.
 - Same goes for ```igit save``` - without pushing to remote.
