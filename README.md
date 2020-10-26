@@ -32,9 +32,9 @@ pip install igit
 
 #### From:
 ```bash
-# git add .
-# git commit -m "commit message"
-# git push 
+git add .
+git commit -m "commit message"
+git push 
 ```
 
 #### To:
