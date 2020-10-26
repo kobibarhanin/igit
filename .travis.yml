@@ -1,11 +1,58 @@
 language: python
-
-os:
-  - linux
+dist: xenial
+os: linux
 
 python:
+  - "nightly"
+  - "3.9-dev"
+  - "3.8"
   - "3.7"
+  # - "3.9"
+  # 3.9 doesn't exist yet.
 
+
+# branches:
+#   only:
+#   - master
+
+cache: pip
+jobs:
+  include:
+    - name: "MacOS Xcode9.4 (Python 3.7.5) test"
+      os: osx
+      osx_image: xcode9.4
+      language: shell
+    - name: "MacOS Xcode10 (Python 3.7.5) test"
+      os: osx
+      osx_image: xcode10
+      language: shell
+    - name: "MacOS Xcode11 (Python 3.7.7) test"
+      os: osx
+      osx_image: xcode11
+      language: shell
+    - name: "MacOS Xcode12 (Python 3.8.3) test"
+      os: osx
+      osx_image: xcode12
+      language: shell
+
+    - name: "Unbuntu 12"
+      os: linux
+      dist: precise
+    - name: "Ubuntu 14"
+      os: linux
+      dist: trusty
+    - name: "Ubuntu 16"
+      os: linux
+      dist: xenial
+    - name: "Ubuntu 18"
+      os: linux
+      dist: bionic
+    - name: "Ubuntu 20"
+      os: linux
+      dist: focal
+  fast_finish: true
+  allow_failures:
+    - python: "nightly"
+    - python: "3.9-dev"
 script:
   - make test
-#  - ./tests/test_pip.sh
