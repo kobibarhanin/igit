@@ -30,6 +30,8 @@ pip install igit
 
 ### Fast commits
 
+Push / Commit your code in one command.
+
 #### From:
 ```bash
 git add .
@@ -55,11 +57,15 @@ You can also go through the whole interactive process:
 
 ### Undo changes
 
+Undo changes (unstaged) in a file or in all files.
+
 ```bash
 # To undo changes in an unstaged changed file:
 igit undo file_1.py 
 # To pick a file just drop the file's name:
 igit undo
+# undo all changes
+igit undo -all
 ```
 
 ![undo](examples/undo_cmd.png)
@@ -70,11 +76,15 @@ igit undo
 
 ### Branch hopping
 
+Move easily between local branches, enable hopping to move seamlessly even in case of unstaged changes.
+
 ```bash
 # To change branches:
 igit branch
 # To change branches with unstaged changes:
 igit branch --hopping_on 
+# Create a new branch and change into it:
+igit branch --create
 ```
 ![branch](examples/branch_cmd.png)
 
@@ -84,6 +94,8 @@ You can use ```git stash list``` to see stashed changes and ```git stash pop``` 
 
 
 ### git ignore
+
+Add files to ignore, create ignore files from templetes.
 
 ```bash
 # To add files to .gitignore:
@@ -102,6 +114,8 @@ igit ignore --reset
 And then push to remote - your current .gitignore will take effect. 
 
 ### diff
+
+Select a file to view diff.
 
 ```bash
 igit diff
