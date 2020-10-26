@@ -18,22 +18,22 @@ python:
 cache: pip
 jobs:
   include:
-    - name: "MacOS Xcode9.4 (Python 3.7.5) test"
-      os: osx
-      osx_image: xcode9.4
-      language: shell
-    - name: "MacOS Xcode10 (Python 3.7.5) test"
-      os: osx
-      osx_image: xcode10
-      language: shell
-    - name: "MacOS Xcode11 (Python 3.7.7) test"
-      os: osx
-      osx_image: xcode11
-      language: shell
-    - name: "MacOS Xcode12 (Python 3.8.3) test"
-      os: osx
-      osx_image: xcode12
-      language: shell
+#     - name: "MacOS Xcode9.4 (Python 3.7.5) test"
+#       os: osx
+#       osx_image: xcode9.4
+#       language: shell
+#     - name: "MacOS Xcode10 (Python 3.7.5) test"
+#       os: osx
+#       osx_image: xcode10
+#       language: shell
+#     - name: "MacOS Xcode11 (Python 3.7.7) test"
+#       os: osx
+#       osx_image: xcode11
+#       language: shell
+#     - name: "MacOS Xcode12 (Python 3.8.3) test"
+#       os: osx
+#       osx_image: xcode12
+#       language: shell
 
     - name: "Unbuntu 12"
       os: linux
