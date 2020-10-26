@@ -83,7 +83,7 @@ igit branch --hopping_on
 You can use ```git stash list``` to see stashed changes and ```git stash pop``` to retrieve stashed changes
 
 
-### Branch hopping
+### git ignore
 
 ```bash
 # To add files to .gitignore:
@@ -100,6 +100,14 @@ igit ignore --create
 igit ignore --reset 
 ```
 And then push to remote - your current .gitignore will take effect. 
+
+### diff
+
+```bash
+igit diff
+```
+![diff](examples/diff_cmd.png)
+
 
 ## Compatibility
 igit is cross-platform → Windows, macOS, Linux 
