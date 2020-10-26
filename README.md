@@ -3,7 +3,11 @@
 
 # Igit - Interactive Git
 
+## TL;DR:
 Igit is an interactive supplementary CLI to git for better git experience.
+
+## The Story:
+For a long time I've been using a variety of aliases for git commands, some of which were custom and aimed to boosting my git productivity - so I've decided to  package it into a product for others to use.
 
 ## Main features:
 1. Fast commits - add, commit & push, instantly. 
