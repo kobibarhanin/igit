@@ -66,7 +66,7 @@ class Igit:
             self.add(_files=None, _all=False)
             self.commit(_message=None, _add=False)
         elif _commit:
-            self.commit(_message=None, _add=False)
+            self.commit(_message=None, _add=True)
         try:
             self.gitops.repo.git.push('origin', self.gitops.branch)
             self.display.message('pushed', 'cyan', 'rocket')
