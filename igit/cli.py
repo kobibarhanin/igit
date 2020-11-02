@@ -76,8 +76,9 @@ def branch(name, hopping_on, create):
 
 @cli.command(help='Adds, Commits and Pushes changes to remote.')
 @click.option('--message', '-m', default=None, help='commit message (optional)')
-def up(message):
-    Igit().up(message)
+@click.option('--commit', '-c', is_flag=True, default=False, help='prompt for commit message')
+def up(message, commit):
+    Igit().up(message, commit)
 
 
 @cli.command(help='Prints diff of selected file.')

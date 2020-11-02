@@ -78,10 +78,13 @@ class Igit:
         message = message if message else DEFAULT_COMMIT
         self.commit(_message=message, _add=False)
 
-    def up(self, message):
+    def up(self, message, commit):
         self.add(_files=None, _all=True)
-        message = message if message else DEFAULT_COMMIT
-        self.commit(_message=message, _add=False)
+        if commit:
+            self.commit(_message=None, _add=False)
+        else:
+            message = message if message else DEFAULT_COMMIT
+            self.commit(_message=message, _add=False)
         self.push(_add=False, _commit=False)
 
     def branch(self, target_branch, hopping_mode, create_new):
