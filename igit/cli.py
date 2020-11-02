@@ -75,7 +75,7 @@ def branch(name, hopping_on, create):
 
 
 @cli.command(help='Adds, Commits and Pushes changes to remote.')
-@click.option('--message', default=None, help='commit message (optional)')
+@click.option('--message', '-m', default=None, help='commit message (optional)')
 def up(message):
     Igit().up(message)
 
