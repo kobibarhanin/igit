@@ -126,7 +126,7 @@ igit diff
 ## Compatibility
 igit is cross-platform → Windows, macOS, Linux 
 
-🤓 __windows users will get best experience with windows terminal.__
+🤓: __windows users will get best experience with Windows Terminal / WSL__
 	
 
 ## Built with
