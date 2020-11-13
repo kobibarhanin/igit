@@ -1,54 +1,33 @@
-import os
-import emoji
-from emoji import EMOJI_ALIAS_UNICODE
-from termcolor import colored
+from rich.console import Console
 
 
 class Display:
 
-    def __init__(self, os_type=os.name) -> None:
-        self.os_type = os_type
+    def __init__(self,) -> None:
+        self.console = Console()
 
     def message(self, text, color='white', icon='poop'):
-        _emoji, _emoji_render_method = self.emojize(icon)
-        self._display(f'{_emoji} - {text}', color, _emoji_render_method)
+        self.console.print(f':{icon}: - {text}', style=f'bold {color}')
 
     def list(self, text, items, color, icon):
-        _emoji, _emoji_render_method = self.emojize(icon)
-        self._display(f'{_emoji} - {text}:', color, _emoji_render_method)
+        self.console.print(f':{icon}: - {text}', style=f'bold {color}')
         for item in items:
-            self._display(" " * 8 + item, 'white', _emoji_render_method)
+            self.console.print(" " * 8 + item, style='white')
 
-    def emojize(self, icon):
-        icon = f':{icon}:'
-        if self.os_type == 'nt':
-            import psutil
-            res_icon = '*'
-            shell = psutil.Process(os.getpid()).parent().parent().name()
-            if shell == 'powershell.exe':
-                res_icon = EMOJI_ALIAS_UNICODE[icon]
-            return res_icon, lambda *args, **kwargs: args[0]
-        else:
-            return icon, emoji.emojize
-
-    @classmethod
-    def diff(cls, diff):
+    def diff(self, diff):
         if diff.startswith('+++') or diff.startswith('---'):
-            print(colored(diff, 'white'))
+            self.console.print(diff, style=f'bold white')
         elif diff.startswith('+'):
-            print(colored(diff, 'green'))
+            self.console.print(diff, style=f'bold green')
         elif diff.startswith('-'):
-            print(colored(diff, 'red'))
+            self.console.print(diff, style=f'bold red')
         else:
-            print(colored(diff, 'white'))
-
-    @staticmethod
-    def _display(text, color, emoji_method=lambda *args, **kwargs: args):
-        print(colored(emoji_method(text, use_aliases=True), color))
+            self.console.print(diff, style=f'white')
 
 
 if __name__ == '__main__':
 
-    display = Display(os_type='nt')
+    display = Display()
     display.message('hello', 'green', 'thumbsup')
     display.list('hello', ['item1', 'item2'], 'green', 'thumbsup')
+

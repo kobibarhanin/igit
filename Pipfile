@@ -20,6 +20,7 @@ click = "*"
 invoke = "*"
 click-help-colors = "*"
 requests = "*"
+rich = "*"
 
 [requires]
 python_version = "3.7"

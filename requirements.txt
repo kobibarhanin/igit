@@ -41,3 +41,4 @@ urllib3==1.25.11
 wcwidth==0.2.5
 wrapt==1.12.1
 zipp==3.3.1
+rich==9.2.0
