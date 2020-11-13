@@ -126,7 +126,7 @@ igit diff
 ## Compatibility
 igit is cross-platform → Windows, macOS, Linux 
 
-🤓 windows users will get best experience with windows terminal - powershell session.
+🤓 windows users will get best experience with windows terminal.
 	
 
 ## Built with
@@ -134,7 +134,7 @@ igit is cross-platform → Windows, macOS, Linux
 - click
 - gitpython
 - inquirer
-- emoji
+- rich
 
 ## Contributing
 Pull requests are welcome. For major changes, please open an issue first to discuss what you would like to change.
