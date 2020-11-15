@@ -75,10 +75,15 @@ def branch(name, hopping_on, create):
 
 
 @cli.command(help='Adds, Commits and Pushes changes to remote.')
+@click.option('--add', '-a', is_flag=True, default=False, help='prompts for staging files')
+@click.option('--commit', '-c', is_flag=True, default=False, help='prompts for commit message')
 @click.option('--message', '-m', default=None, help='commit message (optional)')
-@click.option('--commit', '-c', is_flag=True, default=False, help='prompt for commit message')
-def up(message, commit):
-    Igit().up(message, commit)
+@click.option('--interactive', '-i', is_flag=True, default=False, help='alias for --add --commit')
+def up(message, commit, add, interactive):
+    if interactive:
+        Igit().up(None, True, True)
+    else:    
+        Igit().up(message, commit, add)
 
 
 @cli.command(help='Prints diff of selected file.')

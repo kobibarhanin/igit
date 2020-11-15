@@ -78,13 +78,9 @@ class Igit:
         message = message if message else DEFAULT_COMMIT
         self.commit(_message=message, _add=False)
 
-    def up(self, message, commit):
-        self.add(_files=None, _all=True)
-        if commit:
-            self.commit(_message=None, _add=False)
-        else:
-            message = message if message else DEFAULT_COMMIT
-            self.commit(_message=message, _add=False)
+    def up(self, message, commit, add):                
+        self.add(_files=None, _all=False if add else True)
+        self.commit(_message=None if commit else message if message else DEFAULT_COMMIT, _add=False)
         self.push(_add=False, _commit=False)
 
     def branch(self, target_branch, hopping_mode, create_new):
@@ -216,7 +212,6 @@ class Igit:
         if not os.path.exists(gitignore_path):
             if self.interact.confirm('no gitignore file detected, create new?'):
                 self.gitops.create_gitignore(gitignore_path)
-                return
 
         if reset:
             shell = Shell()
