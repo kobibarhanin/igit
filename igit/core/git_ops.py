@@ -5,6 +5,7 @@ from git import Repo
 from git import InvalidGitRepositoryError
 from igit.interactive.display import Display
 from igit.interactive.interact import Interact
+from igit.core.ignore_files import gitignore_files
 
 
 class GitOps:
@@ -63,10 +64,11 @@ class GitOps:
         if rv is None:
             return
         if rv:
-            gitignore_files = ['Python', 'Java', 'Go', 'Swift', 'Node', 'C', 'C++']
             rv = self.interact.select('What kind of .gitignore do you need', gitignore_files)
             url = f'https://raw.githubusercontent.com/github/gitignore/master/{rv}.gitignore'
             r = requests.get(url)
+            if r.status_code != 200:
+                raise Exception(f'unable to fetch gitignore file for {rv}')
             with open(gitignore_path, 'wb') as f:
                 f.write(r.content)
         else:
