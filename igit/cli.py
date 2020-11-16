@@ -68,10 +68,10 @@ def save(message):
 
 @cli.command(help='Switch to another branch.')
 @click.option('--name', '-n', default=None, help='target branch to switch to')
-@click.option('--hopping_on', '-h', is_flag=True, default=False, help='activate branch hopping')
+@click.option('--hop', '-h', is_flag=True, default=False, help='activate branch hopping')
 @click.option('--create', '-c', is_flag=True, default=False, help='create a new branch')
-def branch(name, hopping_on, create):
-    return Igit().branch(name, hopping_on, create)
+def branch(name, hop, create):
+    return Igit().branch(name, hop, create)
 
 
 @cli.command(help='Adds, Commits and Pushes changes to remote.')

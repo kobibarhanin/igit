@@ -220,7 +220,7 @@ class Igit:
 
         else:
             ex_dirs = [Path(ex_dir) for ex_dir in ['.git']]
-            opt_files = get_files(Path(self.gitops.repo_path), ex_dirs, [])
+            opt_files = get_files(Path(self.gitops.repo_path), ex_dirs, [], False)
             opt_files = [str(file) for file in opt_files]
 
             # subtract files that are already added

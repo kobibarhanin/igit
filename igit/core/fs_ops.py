@@ -13,13 +13,13 @@ def in_stem(fs_element, excluded_dirs):
     return False
 
 
-def get_files(base_path, excluded_dirs=None, excluded_files=None):
+def get_files(base_path, excluded_dirs=None, excluded_files=None, files_only=True):
     files = []
     for file in base_path.rglob('*'):
         file_rel_path = file.relative_to(base_path)
         if not in_stem(file_rel_path, excluded_dirs) \
                 and file_rel_path not in excluded_files \
-                and file.is_file():
+                and file.is_file() if files_only else True:
             files.append(file_rel_path)
     return files
 

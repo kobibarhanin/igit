@@ -8,8 +8,7 @@ gitsy.egg-info/
 
 .archive/
 .vscode/
-
-/core/dev/
+.dev/
 
 .env
 todo.md
