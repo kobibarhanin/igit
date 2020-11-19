@@ -157,6 +157,7 @@ class Igit:
 
     def rename(self, name):
         try:
+            # TODO - interactivize
             self.gitops.repo.active_branch.rename(name)
         except Exception as e:
             print(e)
@@ -200,6 +201,14 @@ class Igit:
                 self.display.message('nothing to unstage', 'yellow', 'speak_no_evil')
         except GitCommandError as e:
             self.display.message(f'unable to unstage\n{e}', 'red', 'x')
+
+    def revert(self, commit):
+        if commit:
+            self.gitops.repo.head.reset(commit, index=True)
+        else:
+            self.gitops.repo.head.reset('HEAD~1', index=True)
+            # FOR HARD RESET:
+            # self.gitops.repo.head.reset('HEAD~1', index=True, working_tree=True)
 
     def ignore(self, reset, create):
         # check for .gitignore file, prompt to create if none detected

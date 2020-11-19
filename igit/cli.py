@@ -53,25 +53,10 @@ def commit(message, add):
     Igit().commit(message, add)
 
 
-@cli.command(help='Push changes.')
-@click.option('--add', '-a', is_flag=True, default=False, help='add --all and commit before push')
-@click.option('--commit', '-c', is_flag=True, default=False, help='push to remote')
-def push(add, commit):
-    Igit().push(add, commit)
-
-
 @cli.command(help='Adds and Commits changes.')
 @click.option('--message', default=None, help='commit message (optional)')
 def save(message):
     Igit().save(message)
-
-
-@cli.command(help='Switch to another branch.')
-@click.option('--name', '-n', default=None, help='target branch to switch to')
-@click.option('--hop', '-h', is_flag=True, default=False, help='activate branch hopping')
-@click.option('--create', '-c', is_flag=True, default=False, help='create a new branch')
-def branch(name, hop, create):
-    return Igit().branch(name, hop, create)
 
 
 @cli.command(help='Adds, Commits and Pushes changes to remote.')
@@ -84,6 +69,14 @@ def up(message, commit, add, interactive):
         Igit().up(None, True, True)
     else:    
         Igit().up(message, commit, add)
+
+
+@cli.command(help='Switch to another branch.')
+@click.option('--name', '-n', default=None, help='target branch to switch to')
+@click.option('--hop', '-h', is_flag=True, default=False, help='activate branch hopping')
+@click.option('--create', '-c', is_flag=True, default=False, help='create a new branch')
+def branch(name, hop, create):
+    return Igit().branch(name, hop, create)
 
 
 @cli.command(help='Prints diff of selected file.')
@@ -105,10 +98,10 @@ def unstage(file, all):
     return Igit().unstage(file, all)
 
 
-@cli.command(help='Revert commit (NOT IMPLEMENTED).')
-def revert():
-    # TODO - implement
-    return 'NOT IMPLEMENTED'
+@cli.command(help='Revert last commit.')
+@click.option('--commit', '-c', default=None, help='commit hash to revert')
+def revert(commit):
+    return Igit().revert(commit)
 
 
 @cli.command(help='Rename current branch.')
