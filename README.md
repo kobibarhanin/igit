@@ -28,6 +28,9 @@ pip install igit
 ## Usage
 ![help](examples/help.png)
 
+![help](examples/igit_preview.gif)
+![help](examples/igit_preview_2.gif)
+
 ### Fast commits
 
 Push / Commit your code in one command.
