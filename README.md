@@ -14,7 +14,7 @@
 
 Igit is an interactive supplementary CLI to git for better git experience.
 
-![Igitpreview](examples/igit_preview.gif | width=600)
+![Igitpreview](https://github.com/kobibarhanin/igit/raw/master/examples/igit_preview.gif | width=600)
 
 <!-- <p align="center">
 
