@@ -1,12 +1,12 @@
 <p align="center">
 
-<a href="#"><img src="https://img.shields.io/github/stars/kobibarhanin/igit?style=social&label=Star&maxAge=2592000" alt="github stars"></a>
+<!-- <a href="#"><img src="https://img.shields.io/github/stars/kobibarhanin/igit?style=social&label=Star&maxAge=2592000" alt="github stars"></a> -->
 
-<h1>Igit - Interactive Git</h1>
+<!-- <h1>Igit - Interactive Git</h1> -->
 
-Igit is an interactive supplementary CLI to git for better git experience.
+<!-- Igit is an interactive supplementary CLI to git for better git experience. -->
 
-    <img 
+<img 
     src="https://github.com/kobibarhanin/igit/raw/master/examples/igit_preview.gif"
     width="600px" border="0" alt="bit">
 </p>
