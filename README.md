@@ -8,7 +8,7 @@
 
 # Igit - Interactive Git
 
-Igit is an interactive supplementary CLI to git for better git experience.
+Igit is an interactive supplementary CLI to git for a better git experience.
 
 <img src="https://github.com/kobibarhanin/igit/raw/master/examples/igit_preview.gif"
     width="600px" border="0" alt="igit_preview">
@@ -19,15 +19,15 @@ For a long time I've been using a variety of aliases for git commands, some of w
 
 ## Main features:
 
-🚀 __Fast commits__ - add, commit & push, instantly.
+🚀 **Fast commits** - add, commit & push, instantly.
 
-↪️ __Undo changes__ - cancel changes made to any file.
+↪️ **Undo changes** - cancel changes made to any file.
 
-🦘 __Branch hopping__ - move between branches, even if you have unstaged changes, without having to stage them.
+🦘 **Branch hopping** - move between branches, even if you have unstaged changes, without having to stage them.
 
-⛔ __Easy ignore__ - add files to ignore, use templates, fix remote sync.
+⛔ **Easy ignore** - add files to ignore, use templates, fix remote sync.
 
-🎹 __Interactivity__ - selectors, checkboxes and prompts instead of typing.
+🎹 **Interactivity** - selectors, checkboxes and prompts instead of typing.
 
 ## Installation
 
@@ -45,23 +45,23 @@ For a comprehensive user guide - visit igit's [wiki](https://github.com/kobibarh
 
 ## Compatibility
 
-igit is cross-platform → Windows, macOS, Linux.
+Igit is cross-platform → Windows, MacOSX, Linux.
 
 🤓 - **Windows users will get best experience with Windows Terminal / WSL**.
 
 ## Built with
 
-- click
-- gitpython
-- inquirer
-- rich
+- [click](https://github.com/pallets/click)
+- [gitpython](https://github.com/gitpython-developers/GitPython)
+- [inquirer](https://github.com/CITGuru/PyInquirer)
+- [rich](https://github.com/willmcgugan/rich)
 
 ## Contributing
 
 Pull requests are welcome. For major changes, please open an issue first to discuss what you would like to change.
 Please make sure to update tests as appropriate.
 
-### Local dev environment (macOS / Linux)
+### Local dev environment (MacOSX / Linux)
 
 - Clone this project
 - cd into project directory
@@ -70,7 +70,7 @@ Please make sure to update tests as appropriate.
 - Add [bash alias](https://linuxize.com/post/how-to-create-bash-aliases/):
 
 ```bash
-alias igit='PYTHONPATH=<LOCAL GITSY PROJECT DIR> <PIPENV VENV PATH>/bin/python3 <LOCAL IGIT PROJECT DIR>/igit/cli.py'
+alias igit='PYTHONPATH=<LOCAL IGIT PROJECT DIR> <PIPENV VENV PATH>/bin/python3 <LOCAL IGIT PROJECT DIR>/igit/cli.py'
 ```
 
 - Now you can run igit from bash and code changes in local igit dir will apply.
