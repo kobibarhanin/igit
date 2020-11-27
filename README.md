@@ -14,15 +14,14 @@
 
 Igit is an interactive supplementary CLI to git for better git experience.
 
-![Igitpreview](https://github.com/kobibarhanin/igit/raw/master/examples/igit_preview.gif | width=600)
+<!-- ![Igitpreview](https://github.com/kobibarhanin/igit/raw/master/examples/igit_preview.gif | width=600) -->
 
-<!-- <p align="center">
 
 
 <img src="https://github.com/kobibarhanin/igit/raw/master/examples/igit_preview.gif"
     width="600px" border="0" alt="igit_preview">
 
-</p> -->
+
 
 ## The Story:
 
