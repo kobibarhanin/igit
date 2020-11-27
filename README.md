@@ -1,21 +1,21 @@
 <p align="center">
 
-[![Build Status](https://travis-ci.com/kobibarhanin/gitenv.svg?branch=master)](https://travis-ci.com/kobibarhanin/igit)
-[![PyPI version](https://badge.fury.io/py/igit.svg)](https://badge.fury.io/py/igit)
+    [![Build Status](https://travis-ci.com/kobibarhanin/gitenv.svg?branch=master)](https://travis-ci.com/kobibarhanin/igit)
+    [![PyPI version](https://badge.fury.io/py/igit.svg)](https://badge.fury.io/py/igit)
 
-<!-- [![GitHub Stars](https://img.shields.io/github/stars/kobibarhanin/igit) -->
+    <!-- [![GitHub Stars](https://img.shields.io/github/stars/kobibarhanin/igit) -->
 
-[![Maintenance](https://img.shields.io/badge/Maintained%3F-yes-green.svg)](https://GitHub.com/Naereen/StrapDown.js/graphs/commit-activity)
-[![PyPI download month](https://img.shields.io/pypi/dm/ansicolortags.svg)](https://pypi.python.org/pypi/igit/)
-[![Open Source Love svg1](https://badges.frapsoft.com/os/v1/open-source.svg?v=103)](https://github.com/ellerbrock/open-source-badges/)
-[![MIT license](https://img.shields.io/badge/License-MIT-blue.svg)](https://lbesson.mit-license.org/)
+    [![Maintenance](https://img.shields.io/badge/Maintained%3F-yes-green.svg)](https://GitHub.com/Naereen/StrapDown.js/graphs/commit-activity)
+    [![PyPI download month](https://img.shields.io/pypi/dm/ansicolortags.svg)](https://pypi.python.org/pypi/igit/)
+    [![Open Source Love svg1](https://badges.frapsoft.com/os/v1/open-source.svg?v=103)](https://github.com/ellerbrock/open-source-badges/)
+    [![MIT license](https://img.shields.io/badge/License-MIT-blue.svg)](https://lbesson.mit-license.org/)
 
-![GitHub stars](https://img.shields.io/github/stars/kobibarhanin/igit?style=social&label=Star&maxAge=2592000)
-![GitHub forks](https://img.shields.io/github/forks/kobibarhanin/igit?style=social&label=Fork&maxAge=2592000)
+    ![GitHub stars](https://img.shields.io/github/stars/kobibarhanin/igit?style=social&label=Star&maxAge=2592000)
+    ![GitHub forks](https://img.shields.io/github/forks/kobibarhanin/igit?style=social&label=Fork&maxAge=2592000)
 
-# Igit - Interactive Git
+    # Igit - Interactive Git
 
-Igit is an interactive supplementary CLI to git for better git experience.
+    Igit is an interactive supplementary CLI to git for better git experience.
 
 <!-- ![help](examples/igit_preview.gif) -->
     <img src="https://github.com/kobibarhanin/igit/raw/master/examples/igit_preview.gif"
