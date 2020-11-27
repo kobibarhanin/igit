@@ -39,7 +39,8 @@ pip install igit
 
 ## Usage
 
-![help](examples/help.png)
+<img src="https://github.com/kobibarhanin/igit/raw/master/examples/help.png"
+    width="450px" border="0" alt="help">
 
 For a comprehensive user guide - visit igit's [wiki](https://github.com/kobibarhanin/igit/wiki/User-Guide).
 
