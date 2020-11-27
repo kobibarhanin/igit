@@ -19,15 +19,15 @@ For a long time I've been using a variety of aliases for git commands, some of w
 
 ## Main features:
 
-🚀 Fast commits - add, commit & push, instantly.
+🚀 __Fast commits__ - add, commit & push, instantly.
 
-↪️ Undo changes - cancel changes made to any file.
+↪️ __Undo changes__ - cancel changes made to any file.
 
-🦘 Branch hopping - move between branches, even if you have unstaged changes, without having to stage them.
+🦘 __Branch hopping__ - move between branches, even if you have unstaged changes, without having to stage them.
 
-⛔ Easy ignore - add files to ignore, sync with remote.
+⛔ __Easy ignore__ - add files to ignore, sync with remote.
 
-🎹 Interactivity - select and check instead of typing.
+🎹 __Interactivity__ - select and check instead of typing.
 
 ## Installation
 
