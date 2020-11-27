@@ -3,7 +3,6 @@
 [![Build Status](https://travis-ci.com/kobibarhanin/gitenv.svg?branch=master)](https://travis-ci.com/kobibarhanin/igit)
 [![PyPI version](https://badge.fury.io/py/igit.svg)](https://badge.fury.io/py/igit)
 
-<!-- [![GitHub Stars](https://img.shields.io/github/stars/kobibarhanin/igit) -->
 
 [![Maintenance](https://img.shields.io/badge/Maintained%3F-yes-green.svg)](https://GitHub.com/Naereen/StrapDown.js/graphs/commit-activity)
 [![PyPI download month](https://img.shields.io/pypi/dm/ansicolortags.svg)](https://pypi.python.org/pypi/igit/)
@@ -17,10 +16,9 @@
 
 Igit is an interactive supplementary CLI to git for better git experience.
 
-<!-- ![help](examples/igit_preview.gif) -->
 <p align="center">
 
-<img src="https://github.com/kobibarhanin/igit/raw/master/examples/igit_preview.gif"
+    <img src="https://github.com/kobibarhanin/igit/raw/master/examples/igit_preview.gif"
     width="600px" border="0" alt="bit">
 
 </p>
