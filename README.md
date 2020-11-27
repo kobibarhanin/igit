@@ -19,11 +19,11 @@ For a long time I've been using a variety of aliases for git commands, some of w
 
 ## Main features:
 
-1. Fast commits - add, commit & push, instantly.
-2. Undo changes - cancel changes made to any file.
-3. Branch hopping - move between branches, even if you have unstaged changes, without having to stage them.
-4. Easy ignore - add files to ignore, sync with remote.
-5. Interactivity - select and check instead of typing.
+🚀 Fast commits - add, commit & push, instantly.
+↪️ Undo changes - cancel changes made to any file.
+🦘 Branch hopping - move between branches, even if you have unstaged changes, without having to stage them.
+⛔ Easy ignore - add files to ignore, sync with remote.
+🎹 Interactivity - select and check instead of typing.
 
 ## Installation
 
