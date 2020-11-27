@@ -25,9 +25,9 @@ For a long time I've been using a variety of aliases for git commands, some of w
 
 🦘 __Branch hopping__ - move between branches, even if you have unstaged changes, without having to stage them.
 
-⛔ __Easy ignore__ - add files to ignore, sync with remote.
+⛔ __Easy ignore__ - add files to ignore, use templates, fix remote sync.
 
-🎹 __Interactivity__ - select and check instead of typing.
+🎹 __Interactivity__ - selectors, checkboxes and prompts instead of typing.
 
 ## Installation
 
