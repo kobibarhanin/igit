@@ -23,11 +23,3 @@ class Display:
             self.console.print(diff, style=f'bold red')
         else:
             self.console.print(diff, style=f'white')
-
-
-if __name__ == '__main__':
-
-    display = Display()
-    display.message('hello', 'green', 'thumbsup')
-    display.list('hello', ['item1', 'item2'], 'green', 'thumbsup')
-

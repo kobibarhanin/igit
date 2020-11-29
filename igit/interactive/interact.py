@@ -59,10 +59,3 @@ class Inquiry:
                 'text': Text
             }
             self.inquiry = [inquiry_types[inq_type](**inquiry)]
-
-
-if __name__ == '__main__':
-    print(Interact('nt').confirm('yes or no'))
-    print(Interact().text('enter some input'))
-    print(Interact('nt').select('please choose', ['option 1', 'option 2']))
-    print(Interact('nt').choose('please choose', ['option 1', 'option 2']))

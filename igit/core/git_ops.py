@@ -89,18 +89,3 @@ def add_gitignore(gitignore_path, item):
     with open(gitignore_path, 'a') as ignore_file:
         ignore_file.write('\n')
         ignore_file.write(item)
-
-
-if __name__ == '__main__':
-    dir_path = '/Users/kobarhan/workspace/igit_test'
-    gc = GitOps(dir_path)
-
-    staged = gc.get_changed_files('staged')
-    unstaged = gc.get_changed_files('unstaged')
-    untracked = gc.get_untracked_files()
-
-    print(f'staged changes: {staged}')
-    print(f'unstaged changes: {unstaged}')
-    print(f'untracked changes: {untracked}')
-
-    print(f'all changes: {gc.get_all_changes()}')

@@ -22,17 +22,3 @@ def get_files(base_path, excluded_dirs=None, excluded_files=None, files_only=Tru
                 and file.is_file() if files_only else True:
             files.append(file_rel_path)
     return files
-
-if __name__ == "__main__":
-
-    dir_path = '/Users/kobarhan/workspace/igit_test'
-    repo_path = Path(dir_path)
-
-    ex_dirs = [Path(ex_dir) for ex_dir in ['.git']]
-    ex_files = [Path(ex_file) for ex_file in ['data3.txt']]
-
-    files_objects = get_files(repo_path, ex_dirs, ex_files)
-    print(files_objects)
-
-    files_objects = [str(file) for file in files_objects]
-    print(files_objects)

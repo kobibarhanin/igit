@@ -18,8 +18,3 @@ class Shell:
         if not self.silent:
             print(result.stdout)
         return result
-
-
-if __name__ == "__main__":
-    shell = Shell()
-    shell >> "ls -la"
