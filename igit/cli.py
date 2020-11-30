@@ -75,8 +75,9 @@ def up(message, commit, add, interactive):
 @click.option('--name', '-n', default=None, help='target branch to switch to')
 @click.option('--hop', '-h', is_flag=True, default=False, help='activate branch hopping')
 @click.option('--create', '-c', is_flag=True, default=False, help='create a new branch')
-def branch(name, hop, create):
-    return Igit().branch(name, hop, create)
+@click.option('--migrate', '-m', is_flag=True, default=False, help='branch with current changes')
+def branch(name, hop, create, migrate):
+    return Igit().branch(name, hop, create, migrate)
 
 
 @cli.command(help='Prints diff of selected file.')

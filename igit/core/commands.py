@@ -83,13 +83,18 @@ class Igit:
         self.commit(_message=None if commit else message if message else DEFAULT_COMMIT, _add=False)
         self.push(_add=False, _commit=False)
 
-    def branch(self, target_branch, hopping_mode, create_new):
+    def branch(self, target_branch, hopping_mode, create_new, migrate_mode):
         """
         Swith to target_branch if specified, else prompt branch menu.
         Implements auto-stashing to allow flex branch hopping.
         :param target_branch:
         :return:
         """
+        if migrate_mode:
+            carry_stash = f'{GLOBAL_STASH_PREFIX}_{self.gitops.branch}'
+            print(self.gitops.repo.git.stash(f'save', carry_stash))
+            
+
         if create_new:
             branch_name = Interact().text('Give it a name')
             self.gitops.create_branch(branch_name)
@@ -101,12 +106,40 @@ class Igit:
                 create_new = Interact().confirm('No local branches detected. create new?')
                 if create_new:
                     branch_name = Interact().text('Give it a name')
+                    if migrate_mode:
+                        stash_list = self.gitops.repo.git.stash('list')
+                        stash_stub = carry_stash
+                        if stash_list:
+                            stash_list = stash_list.split("\n")
+                            for stash in stash_list:
+                                stash_name = stash.split(' ')[-1]
+                                if stash_stub == stash_name:
+                                    stash_index = stash.split(' ')[0].replace(':', '')
+                                    self.gitops.repo.git.stash(f'pop', stash_index)
+                                    self.display.message(f'Loading diff (stash): {stash_name}', 'green', 'thumbsup')
+                                    break
                     self.gitops.create_branch(branch_name)
                     return
                 return
             else:
-                target_branch = self.interact.select('choose terget branch', branches)
+                target_branch = self.interact.select('choose terget branch', ['[New]'] + branches)
                 if not target_branch:
+                    return
+                if target_branch == '[New]':
+                    if migrate_mode:
+                        stash_list = self.gitops.repo.git.stash('list')
+                        stash_stub = carry_stash
+                        if stash_list:
+                            stash_list = stash_list.split("\n")
+                            for stash in stash_list:
+                                stash_name = stash.split(' ')[-1]
+                                if stash_stub == stash_name:
+                                    stash_index = stash.split(' ')[0].replace(':', '')
+                                    self.gitops.repo.git.stash(f'pop', stash_index)
+                                    self.display.message(f'Loading diff (stash): {stash_name}', 'green', 'thumbsup')
+                                    break
+                    branch_name = Interact().text('Give it a name')
+                    self.gitops.create_branch(branch_name)
                     return
 
         if hopping_mode:
