@@ -90,91 +90,43 @@ class Igit:
         :param target_branch:
         :return:
         """
-        if migrate_mode:
-            carry_stash = f'{GLOBAL_STASH_PREFIX}_{self.gitops.branch}'
-            print(self.gitops.repo.git.stash(f'save', carry_stash))
-            
 
-        if create_new:
-            branch_name = Interact().text('Give it a name')
-            self.gitops.create_branch(branch_name)
-            return
+        # TODO - need to pass the created branch name forward 
+        # should be only one branch switch call in this function 
+        # probably best populate the target branch variable
 
-        if not target_branch:
+        if not (target_branch or create_new):
             branches = [branch.name for branch in list(self.gitops.repo.branches)]
             if len(branches) == 1:
-                create_new = Interact().confirm('No local branches detected. create new?')
-                if create_new:
-                    branch_name = Interact().text('Give it a name')
-                    if migrate_mode:
-                        stash_list = self.gitops.repo.git.stash('list')
-                        stash_stub = carry_stash
-                        if stash_list:
-                            stash_list = stash_list.split("\n")
-                            for stash in stash_list:
-                                stash_name = stash.split(' ')[-1]
-                                if stash_stub == stash_name:
-                                    stash_index = stash.split(' ')[0].replace(':', '')
-                                    self.gitops.repo.git.stash(f'pop', stash_index)
-                                    self.display.message(f'Loading diff (stash): {stash_name}', 'green', 'thumbsup')
-                                    break
-                    self.gitops.create_branch(branch_name)
-                    return
-                return
+                if Interact().confirm('No local branches detected. create new?'):
+                    target_branch = self.gitops.create_branch()
             else:
                 target_branch = self.interact.select('choose terget branch', ['[New]'] + branches)
                 if not target_branch:
                     return
                 if target_branch == '[New]':
-                    if migrate_mode:
-                        stash_list = self.gitops.repo.git.stash('list')
-                        stash_stub = carry_stash
-                        if stash_list:
-                            stash_list = stash_list.split("\n")
-                            for stash in stash_list:
-                                stash_name = stash.split(' ')[-1]
-                                if stash_stub == stash_name:
-                                    stash_index = stash.split(' ')[0].replace(':', '')
-                                    self.gitops.repo.git.stash(f'pop', stash_index)
-                                    self.display.message(f'Loading diff (stash): {stash_name}', 'green', 'thumbsup')
-                                    break
-                    branch_name = Interact().text('Give it a name')
-                    self.gitops.create_branch(branch_name)
-                    return
+                    target_branch = self.gitops.create_branch()
+
+        elif create_new:
+            target_branch = self.gitops.create_branch()
 
         if hopping_mode:
             # handle branch hopping in case of untracked files
             untracked = self.gitops.get_untracked_files()
             if untracked:
                 self.display.list('Untracked files found', untracked, 'white', 'speak_no_evil')
-                if not self.interact.confirm(f'Stage them to continue?'):
-                    self.display.message('Stage files to branch with igit', 'yellow', 'sweat_smile')
-                    return
+                if self.interact.confirm(f'Stage them to continue?'):
+                    self.gitops.add(untracked)
                 else:
-                    self.display.message('Staging untracked files', 'yellow', 'floppy_disk')
-                    self.gitops.repo.git.add(untracked)
+                    return
 
-            change_list = self.gitops.get_all_changes()
-
-            if len(change_list) > 0:
-                self.gitops.repo.git.stash(f'save', f'{GLOBAL_STASH_PREFIX}_{self.gitops.branch}')
-                self.display.message(f'Saving diff (stash): {GLOBAL_STASH_PREFIX}_{self.gitops.branch}', 'green', 'thumbsup')
+        if hopping_mode and len(self.gitops.get_all_changes()) > 0 or migrate_mode:
+            self.gitops.stash(target_branch)
 
         self.gitops.switch_branch(target_branch)
 
-        if hopping_mode:
-            stash_list = self.gitops.repo.git.stash('list')
-            stash_stub = f'{GLOBAL_STASH_PREFIX}_{self.gitops.branch}'
-            if stash_list:
-                stash_list = stash_list.split("\n")
-
-            for stash in stash_list:
-                stash_name = stash.split(' ')[-1]
-                if stash_stub == stash_name:
-                    stash_index = stash.split(' ')[0].replace(':', '')
-                    self.gitops.repo.git.stash(f'pop', stash_index)
-                    self.display.message(f'Loading diff (stash): {stash_name}', 'green', 'thumbsup')
-                    break
+        if hopping_mode or migrate_mode:
+            self.gitops.stash_pop()
 
     def diff(self):
         change_list = self.gitops.get_changed_files('unstaged')

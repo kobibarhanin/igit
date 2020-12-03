@@ -6,6 +6,7 @@ from git import InvalidGitRepositoryError
 from igit.interactive.display import Display
 from igit.interactive.interact import Interact
 from igit.core.ignore_files import gitignore_files
+from igit.core.config import *
 
 
 class GitOps:
@@ -50,9 +51,17 @@ class GitOps:
         self.branch = self.repo.active_branch.name
         self.display.message(f'Switched to branch: {self.branch}', 'yellow', 'checkered_flag')
 
-    def create_branch(self, branch_name):
+    def create_branch(self, branch_name=None):
+        if not branch_name:
+            branch_name = Interact().text('Give it a name')
         self.repo.create_head(branch_name)
+        return branch_name
+
+    def switch_new_branch(self, branch_name=None):
+        self.create_branch(branch_name)
         self.switch_branch(branch_name)
+
+
 
     def create_gitignore(self, gitignore_path):
         if os.path.exists(gitignore_path):
@@ -76,6 +85,28 @@ class GitOps:
         self.display.message('Created .gitignore', icon='tada')
         return
 
+    def stash_pop(self):
+        stash_stub = f'{GLOBAL_STASH_PREFIX}_{self.branch}'
+        stash_list = self.repo.git.stash('list')
+        if stash_list:
+            stash_list = stash_list.split("\n")
+            for stash in stash_list:
+                stash_name = stash.split(' ')[-1]
+                if stash_stub == stash_name:
+                    stash_index = stash.split(' ')[0].replace(':', '')
+                    self.repo.git.stash(f'pop', stash_index)
+                    self.display.message(f'Loading diff (stash): {stash_name}', 'green', 'thumbsup')
+                    break
+
+    def stash(self, target_branch=None):
+        stash_stub = f'{GLOBAL_STASH_PREFIX}_{self.branch}' if not target_branch else f'{GLOBAL_STASH_PREFIX}_{target_branch}'
+        self.repo.git.stash(f'save', stash_stub)
+        self.display.message(f'Saving diff (stash): {stash_stub}', 'green', 'thumbsup')
+
+    def add(self, untracked):
+        self.display.message('Staging untracked files', 'yellow', 'floppy_disk')
+        self.repo.git.add(untracked)
+    
 
 def in_gitignore(gitignore_path, item):
     gitignore = []
