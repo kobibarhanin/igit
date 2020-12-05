@@ -91,10 +91,6 @@ class Igit:
         :return:
         """
 
-        # TODO - need to pass the created branch name forward 
-        # should be only one branch switch call in this function 
-        # probably best populate the target branch variable
-
         if not (target_branch or create_new):
             branches = [branch.name for branch in list(self.gitops.repo.branches)]
             if len(branches) == 1:
@@ -106,7 +102,6 @@ class Igit:
                     return
                 if target_branch == '[New]':
                     target_branch = self.gitops.create_branch()
-
         elif create_new:
             target_branch = self.gitops.create_branch()
 
@@ -122,9 +117,7 @@ class Igit:
 
         if hopping_mode and len(self.gitops.get_all_changes()) > 0 or migrate_mode:
             self.gitops.stash(target_branch)
-
         self.gitops.switch_branch(target_branch)
-
         if hopping_mode or migrate_mode:
             self.gitops.stash_pop()
 
